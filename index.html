@@ -25,14 +25,16 @@
     <div id="slide-history" class="slide">
         <div class="slide-content">
             <h4 id="history-year" class="subtitle" style="font-size: 3.5rem; margin-bottom: 0;"></h4>
-            <h2 id="history-title" class="title-large"></h2>
+            <h2 id="history-title" class="subtitle"></h2>
         </div>
     </div>
 
-    <div id="slide-modern" class="slide">
+    <div id="slide-modern" class="slide" style="justify-content: flex-start; padding-top: 5vh;">
         <div class="slide-content">
+            <h1
+                style="font-size: 2rem; font-weight: 400; text-transform: none; margin-bottom: 20px; text-shadow: 0 2px 10px rgba(0,0,0,0.8);">
+                Dnes tvoříme budoucnost</h1>
             <div id="modern-grid-container" class="masonry-grid"></div>
-            <h1 class="title-large" style="margin-top: 20px;">Dnes tvoříme budoucnost</h1>
         </div>
     </div>
 
@@ -42,8 +44,10 @@
     </div>
 
     <div id="slide-awards" class="slide">
-        <h2 class="title-large">Awards & Honors</h2>
-        <p class="content-text">Home to Neuron Award winners, ERC grant recipients, and Heyrovský Medalists.</p>
+        <h1 class="title-large" style="margin-bottom: 20px;">Awards & Honors</h1>
+        <p class="content-text" style="margin-bottom: 40px;">Home to Neuron Award winners, ERC grant recipients, and
+            L'Oréal-UNESCO Women in Science laureates.</p>
+        <div id="awards-container" class="awards-grid"></div>
     </div>
 
     <div id="slide-video" class="slide" style="padding:0; justify-content:center;">
@@ -55,6 +59,7 @@
     <script src="video-slide.js"></script>
     <script src="modern-slide.js"></script>
     <script src="people-slide.js"></script>
+    <script src="awards-slide.js"></script>
     <script src="main.js"></script>
 </body>
 

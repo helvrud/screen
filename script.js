@@ -1,30 +1,30 @@
 /* --- CONFIGURATION --- */
 const modernImagesData = [
-    { file: "lab1.jpg", class: "", name: "Laboratoř pokročilé katalýzy" }, 
-    { file: "lab2.jpg", class: "",  name: ""  },  
-    { file: "lab3.jpg", class: "",  name: ""  },  
-    { file: "lab4.jpg", class: "",         name: ""  },        
-    { file: "lab5.jpg", class: "m-tall",  name: ""  },
-    { file: "lab6.jpg", class: "",         name: ""  }
+    { file: "images/lab1.jpg", class: "", name: "Laboratoř pokročilé katalýzy" },
+    { file: "images/lab2.jpg", class: "", name: "" },
+    { file: "images/lab3.jpg", class: "", name: "" },
+    { file: "images/lab4.jpg", class: "", name: "" },
+    { file: "images/lab5.jpg", class: "m-tall", name: "" },
+    { file: "images/lab6.jpg", class: "", name: "" }
 ];
 
 const peopleData = [
-    { file: "person_FU.jpg", name: "Head of Dept: Prof. RNDr. Filip Uhlík, Ph.D." },
-    { file: "person_JC.jpg", name: "prof. Ing. Jiří Čejka, DrSc." },
-    { file: "person_MO.jpg", name: "Doc. Maksym Opanasenko, Ph.D." },
-    { file: "person_MS.jpg", name: "Doc. Mariya Shamzhy, Ph.D." },
-    { file: "person_JP.jpg", name: "Ing. Jan Přech, Ph.D." }
+    { file: "images/person_FU.jpg", name: "Head of Dept: Prof. RNDr. Filip Uhlík, Ph.D." },
+    { file: "images/person_JC.jpg", name: "prof. Ing. Jiří Čejka, DrSc." },
+    { file: "images/person_MO.jpg", name: "Doc. Maksym Opanasenko, Ph.D." },
+    { file: "images/person_MS.jpg", name: "Doc. Mariya Shamzhy, Ph.D." },
+    { file: "images/person_JP.jpg", name: "Ing. Jan Přech, Ph.D." }
 ];
 
 const historyData = [
-    { year: "1921", title: "Katedru fyzikální chemie založil v roce 1921 prof. Jaroslav Heyrovský", img: "heyrovsky2.jpg" },
-    { year: "1922", title: "Známý pro svůj objev polarografie", img: "heyrovsky1.jpg"},
-    { year: "1959", title: "za který mu byla v roce 1959 udělena Nobelova cena za chemii.", img: "heyrovsky4.jpg", video: "ITUxwtxtc5Y" }
+    { year: "1921", title: "Katedru fyzikální chemie založil v roce 1921 prof. Jaroslav Heyrovský", img: "images/heyrovsky2.jpg" },
+    { year: "1922", title: "Známý pro svůj objev polarografie", img: "images/heyrovsky1.jpg" },
+    { year: "1959", title: "za který mu byla v roce 1959 udělena Nobelova cena za chemii.", img: "images/heyrovsky4.jpg", video: "ITUxwtxtc5Y" }
 ];
 
 /* --- STATE MANAGEMENT --- */
 let player, activeTimeline, currentSlideIndex = 0, historyIndex = 0;
-const peopleElements = []; 
+const peopleElements = [];
 const modernElements = [];
 
 /* --- INITIALIZATION --- */
@@ -37,7 +37,7 @@ function loadYouTubeAPI() {
 
 function setupPortraitsGrid() {
     const gridSlide = document.getElementById('slide-grid');
-    if(!gridSlide) return;
+    if (!gridSlide) return;
     peopleData.forEach((person, i) => {
         const img = document.createElement('img');
         img.src = person.file; img.className = 'person-photo';
@@ -55,7 +55,7 @@ function setupPortraitsGrid() {
 function setupModernGrid() {
     const gridSlide = document.getElementById('slide-modern');
     const container = document.getElementById('modern-grid-container');
-    if(!gridSlide || !container) return;
+    if (!gridSlide || !container) return;
 
     modernImagesData.forEach((data, i) => {
         // 1. Create the slot
@@ -67,7 +67,7 @@ function setupModernGrid() {
         const img = document.createElement('img');
         img.src = data.file;
         img.className = 'modern-photo';
-        
+
         // 3. FIX: Set slot aspect ratio based on actual image size
         const tempImg = new Image();
         tempImg.src = data.file;
@@ -80,8 +80,8 @@ function setupModernGrid() {
 
         // 4. Create label
         const label = document.createElement('div');
-        label.className = 'name-label'; 
-        label.innerText = data.name || ""; 
+        label.className = 'name-label';
+        label.innerText = data.name || "";
         gridSlide.appendChild(label);
 
         modernElements.push({ img, slot, label });
@@ -109,13 +109,13 @@ function onPlayerStateChange(e) {
 
 /* --- ANIMATION ENGINE --- */
 const slideSequence = [
-    { id: 'slide-intro',   func: () => playSimpleFade('slide-intro') },
+    { id: 'slide-intro', func: () => playSimpleFade('slide-intro') },
     { id: 'slide-history', func: playHistorySequence },
-    { id: 'slide-modern',  func: () => playUniversalGrid('slide-modern', modernElements) },
-    { id: 'slide-grid',    func: () => playUniversalGrid('slide-grid', peopleElements) },
-    { id: 'slide-awards',  func: () => playSimpleFade('slide-awards') },
-    { id: 'video-1',       func: () => playVideoSlide("aIls-MJEnHs") },
-    { id: 'video-2',       func: () => playVideoSlide("hV2Ne1M-xM4") }
+    { id: 'slide-modern', func: () => playUniversalGrid('slide-modern', modernElements) },
+    { id: 'slide-grid', func: () => playUniversalGrid('slide-grid', peopleElements) },
+    { id: 'slide-awards', func: () => playSimpleFade('slide-awards') },
+    { id: 'video-1', func: () => playVideoSlide("aIls-MJEnHs") },
+    { id: 'video-2', func: () => playVideoSlide("hV2Ne1M-xM4") }
 ];
 
 function goToSlide(index) {
@@ -136,7 +136,7 @@ function playSimpleFade(id) {
     const el = document.getElementById(id);
     activeTimeline = gsap.timeline({ onComplete: nextSlide });
     activeTimeline.to(el, { visibility: 'visible', opacity: 1, duration: 1.5 })
-                  .to(el, { opacity: 0, duration: 1, delay: 4 });
+        .to(el, { opacity: 0, duration: 1, delay: 4 });
 }
 
 function playHistorySequence() {
@@ -159,28 +159,28 @@ function playHistorySequence() {
         }
     });
     activeTimeline.to(el, { visibility: 'visible', opacity: 1, duration: 1.2 })
-                  .to(el, { opacity: 0, duration: 0.8, delay: 4 });
+        .to(el, { opacity: 0, duration: 0.8, delay: 4 });
 }
 
 function playUniversalGrid(slideId, elementsArray) {
     const el = document.getElementById(slideId);
     gsap.set(el, { visibility: "visible", opacity: 1 });
-    
+
     activeTimeline = gsap.timeline({ onComplete: nextSlide });
 
     elementsArray.forEach((obj, i) => {
-        const startTime = i * 4.0; 
+        const startTime = i * 4.0;
 
         activeTimeline
             .set([obj.img, obj.label], { visibility: 'visible', opacity: 0, scale: 0.5 }, startTime)
-            .to(obj.img, { 
-                opacity: 1, 
-                scale: 1, 
+            .to(obj.img, {
+                opacity: 1,
+                scale: 1,
                 width: obj.img.classList.contains('modern-photo') ? "auto" : "65vh",
                 // width: "65vh", // Large size in center
-                height: "65vh", 
-                duration: 0.8, 
-                ease: "back.out" 
+                height: "65vh",
+                duration: 0.8,
+                ease: "back.out"
             }, startTime)
 
 
@@ -197,9 +197,9 @@ function playUniversalGrid(slideId, elementsArray) {
             //         ease: "back.out(1.2)" 
             //     }, startTime);
             .to(obj.label, { opacity: 1, duration: 0.4 }, startTime + 0.2)
-            
+
             // .to(obj.label, { opacity: 0, duration: 0.3 }, startTime + 2.5)
-            .to(obj.img, { 
+            .to(obj.img, {
                 top: () => {
                     const rect = obj.slot.getBoundingClientRect();
                     return rect.top + (rect.height / 2);

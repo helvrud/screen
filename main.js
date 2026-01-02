@@ -3,19 +3,20 @@ window.activeTimeline = null;
 window.currentSlideIndex = 0;
 
 const slideSequence = [
-    { name: "Intro",   func: () => playSimpleFade('slide-intro') },
+    { name: "Intro", func: () => playSimpleFade('slide-intro') },
     { name: "History", func: playHistorySequence },
-    { name: "Video",   func: () => playVideoSlide("ITUxwtxtc5Y") },
-    { name: "Modern",  func: playModernSlide },
-    { name: "Video",   func: () => playVideoSlide("hV2Ne1M-xM4") },
-    { name: "People",  func: playPeopleSlide }, // Matches function in people-slide.js
-    { name: "Awards",  func: () => playSimpleFade('slide-awards') },
-    { name: "Video",   func: () => playVideoSlide("aIls-MJEnHs") }
+    { name: "Video", func: () => playVideoSlide("ITUxwtxtc5Y") },
+    { name: "Modern", func: playModernSlide },
+    { name: "Video", func: () => playVideoSlide("hV2Ne1M-xM4") },
+    { name: "People", func: playPeopleSlide }, // Matches function in people-slide.js
+    { name: "Awards", func: playAwardsSlide },
+    { name: "Video", func: () => playVideoSlide("3rmbcK2Jkmw") },
+    { name: "Video", func: () => playVideoSlide("aIls-MJEnHs") }
 ];
 
-function nextSlide() { 
+function nextSlide() {
     window.currentSlideIndex = (window.currentSlideIndex + 1) % slideSequence.length;
-    startCurrentSlide(); 
+    startCurrentSlide();
 }
 
 function prevSlide() {
@@ -32,7 +33,7 @@ function startCurrentSlide() {
     }
 
     gsap.killTweensOf("*");
-    
+
     // Stop YouTube video if it's playing
     if (typeof player !== 'undefined' && player.stopVideo) {
         player.stopVideo();
@@ -48,6 +49,7 @@ function startCurrentSlide() {
 window.onload = () => {
     if (typeof setupPeopleGrid === 'function') setupPeopleGrid();
     if (typeof setupModernGrid === 'function') setupModernGrid();
+    if (typeof setupAwardsSlide === 'function') setupAwardsSlide();
     startCurrentSlide();
 };
 

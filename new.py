@@ -16,7 +16,7 @@ TEXT_FADE = 0.5
 
 # Research Group Data
 RESEARCH_GROUPS = [
-    {"tit": "Biofyzikální chemie proteinových komplexů", "lead": "prof. Tomáš Obšil", "img": "obsil.jpg"},
+    {"tit": "Biofyzikální chemie proteinových komplexů", "lead": "prof. Tomáš Obšil", "img": "images/obsil.jpg"},
     # Add other groups here as needed...
 ]
 
@@ -189,7 +189,7 @@ def generate_intro():
     global clips
     # 1. Intro
     clips.append(CompositeVideoClip([
-        ImageClip("hlavova8.jpg").resized(height=1200).with_duration(3),
+        ImageClip("images/hlavova8.jpg").resized(height=1200).with_duration(3),
         create_text("Katedra fyzikální a\nmakromolekulární chemie", fontsize=90).with_position('center').with_duration(3)
     ]).with_effects([vfx.FadeOut(0.5)]))
 
@@ -197,9 +197,9 @@ def generate_history():
     global clips
 
     # 2. History
-    for img, txt in [("3a.jpg", "Katedru fyzikální chemie založil 1921..."), 
-                     ("3b.jpg", "Známý pro svůj objev polarografie…"), 
-                     ("3c.jpg", "...Nobelova cena 1959.")]:
+    for img, txt in [("images/3a.jpg", "Katedru fyzikální chemie založil 1921..."), 
+                     ("images/3b.jpg", "Známý pro svůj objev polarografie…"), 
+                     ("images/3c.jpg", "...Nobelova cena 1959.")]:
         bg = make_blurred_bg(img, 4)
         main = ImageClip(img).resized(height=900).with_position('center').with_duration(4)
         txt_c = create_text(txt).with_position(('center', 1000)).with_duration(4)
@@ -208,16 +208,16 @@ def generate_labs():
     global clips
     # 3. Fast Lab Montage
     labs = [
-        "lab1.jpg", 
-        # "lab2.jpg", 
-        # "lab3.jpg", 
-        # "lab4.jpg", 
-        "lab5.jpg"]
+        "images/lab1.jpg", 
+        # "images/lab2.jpg", 
+        # "images/lab3.jpg", 
+        # "images/lab4.jpg", 
+        "images/lab5.jpg"]
     clips.append(concatenate_videoclips([ImageClip(p).resized(height=1200).with_duration(0.6) for p in labs]))
 def generate_awards():
     global clips
     # 4. Awards
-    for img, txt in [("shamzy_neuron_2.jpg", "Maria Shamzy – Cena Neuron")]:
+    for img, txt in [("images/shamzy_neuron_2.jpg", "Maria Shamzy – Cena Neuron")]:
         clips.append(CompositeVideoClip([make_blurred_bg(img, 4), 
                      ImageClip(img).resized(height=900).with_position('center'),
                      create_text(txt).with_position(('center', 1000))], size=VIDEO_SIZE).with_duration(4))
@@ -243,11 +243,11 @@ def generate_video():
 
     # 6. GRAND FINALE: Cumulative Fly-to-Grid
     # Fill this list with your 16 filenames
-    final_people = ["person_JC.jpg", 
-                    "person_FU.jpg", 
-                    "person_MO.jpg", 
-                    "person_MS.jpg", 
-                    "person_JP.jpg"] 
+    final_people = ["images/person_JC.jpg", 
+                    "images/person_FU.jpg", 
+                    "images/person_MO.jpg", 
+                    "images/person_MS.jpg", 
+                    "images/person_JP.jpg"] 
     # If you have 16, it will fill the 4x4 grid perfectly.
     
     finale_duration = len(final_people) * 1.5 + 5.0 # Calculate duration based on count

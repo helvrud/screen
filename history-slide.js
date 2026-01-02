@@ -1,9 +1,9 @@
 // history-slide.js
 let historyIndex = 0;
 const historyData = [
-    { year: "1921", title: "Katedru fyzikální chemie založil...", img: "heyrovsky2.jpg" },
-    { year: "1922", title: "Známý pro svůj objev polarografie", img: "heyrovsky1.jpg"},
-    { year: "1959", title: "Nobelova cena za chemii.", img: "heyrovsky4.jpg" }
+    { year: "1921", title: "Katedru fyzikální chemie založit v roce 1921 prof. Jaroslav Heyrovský", img: "images/heyrovsky2.jpg" },
+    { year: "1922", title: "Známý pro svůj objev polarografie", img: "images/heyrovsky1.jpg" },
+    { year: "1959", title: "za který mu byla v roce 1959 udělena Nobelova cena za chemii.", img: "images/heyrovsky4.jpg" }
 ];
 
 function playHistorySequence(isRestart = true) {
@@ -11,11 +11,11 @@ function playHistorySequence(isRestart = true) {
 
     const data = historyData[historyIndex];
     const el = document.getElementById('slide-history');
-    
-    if (!el || !data) { 
-        historyIndex = 0; 
-        nextSlide(); 
-        return; 
+
+    if (!el || !data) {
+        historyIndex = 0;
+        nextSlide();
+        return;
     }
 
     el.style.backgroundImage = `url('${data.img}')`;

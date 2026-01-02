@@ -1,10 +1,10 @@
 // people-slide.js
 const peopleData = [
-    { file: "person_JC.jpg", name: "prof. Ing. Jiří Čejka, DrSc." },
-    { file: "person_FU.jpg", name: "Prof. RNDr. Filip Uhlík, Ph.D." },
-    { file: "person_MO.jpg", name: "Doc. Maksym Opanasenko, Ph.D." },
-    { file: "person_MS.jpg", name: "Doc. Mariya Shamzhy, Ph.D." },
-    { file: "person_JP.jpg", name: "Ing. Jan Přech, Ph.D." }
+    { file: "images/person_JC.jpg", name: "prof. Ing. Jiří Čejka, DrSc." },
+    { file: "images/person_FU.jpg", name: "Prof. RNDr. Filip Uhlík, Ph.D." },
+    { file: "images/person_MO.jpg", name: "Doc. Maksym Opanasenko, Ph.D." },
+    { file: "images/person_MS.jpg", name: "Doc. Mariya Shamzhy, Ph.D." },
+    { file: "images/person_JP.jpg", name: "Ing. Jan Přech, Ph.D." }
 ];
 
 const elements = [];
@@ -37,7 +37,7 @@ function setupPeopleGrid() {
 function playPeopleSlide() {
     const el = document.getElementById('slide-people');
     gsap.set(el, { visibility: "visible", opacity: 1, scale: 1 });
-    
+
     window.activeTimeline = gsap.timeline({ onComplete: nextSlide });
 
     // Reset positions
@@ -52,11 +52,11 @@ function playPeopleSlide() {
             .to(obj.img, { opacity: 1, width: "60vh", height: "60vh", duration: 0.7, ease: "back.out(1.2)" }, start)
             .to(obj.label, { opacity: 1, duration: 0.5 }, start + 0.2)
             .to(obj.label, { opacity: 0, duration: 0.3 }, start + 1.8)
-            .to(obj.img, { 
-                top: rect.top + (rect.height / 2), 
-                left: rect.left + (rect.width / 2), 
-                width: rect.width, height: rect.height, 
-                duration: 1.2, ease: "power3.inOut" 
+            .to(obj.img, {
+                top: rect.top + (rect.height / 2),
+                left: rect.left + (rect.width / 2),
+                width: rect.width, height: rect.height,
+                duration: 1.2, ease: "power3.inOut"
             }, start + 1.8);
     });
 

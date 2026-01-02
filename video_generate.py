@@ -12,15 +12,15 @@ TEXT_FADE = 0.5
 
 # Group researcher data from your screenplay [cite: 17-30]
 RESEARCH_GROUPS = [
-    {"tit": "Biofyzikální chemie proteinových komplexů", "lead": "prof. Tomáš Obšil", "img": "obsil.jpg"},
-    # {"tit": "Chromatografické metody", "lead": "doc. Květa Kalíková", "img": "kalikova.jpg"},
-    # {"tit": "Heterogenní katalýza a pokročilé materiály", "lead": "prof. Jiří Čejka", "img": "cejka.jpg"},
-    # {"tit": "Modelování (nano)materiálů", "lead": "doc. Lukáš Grajciar & doc. Christopher Heard", "img": "modeling.jpg"},
-    # {"tit": "Polymerní syntéza a biomateriály", "lead": "doc. Ondřej Sedláček", "img": "sedlacek_o.jpg"},
-    # {"tit": "Porézní polymery", "lead": "doc. Jan Sedláček", "img": "sedlacek_j.jpg"},
-    # {"tit": "Soft matter", "lead": "prof. Miroslav Štěpánek", "img": "stepanek.jpg"},
-    # {"tit": "Soft matter teorie", "lead": "prof. Filip Uhlík", "img": "uhlik.jpg"},
-    # {"tit": "Makromolekulové modelování", "lead": "doc. Peter Košovan", "img": "kosovan.jpg"},
+    {"tit": "Biofyzikální chemie proteinových komplexů", "lead": "prof. Tomáš Obšil", "img": "images/obsil.jpg"},
+    # {"tit": "Chromatografické metody", "lead": "doc. Květa Kalíková", "img": "images/kalikova.jpg"},
+    # {"tit": "Heterogenní katalýza a pokročilé materiály", "lead": "prof. Jiří Čejka", "img": "images/cejka.jpg"},
+    # {"tit": "Modelování (nano)materiálů", "lead": "doc. Lukáš Grajciar & doc. Christopher Heard", "img": "images/modeling.jpg"},
+    # {"tit": "Polymerní syntéza a biomateriály", "lead": "doc. Ondřej Sedláček", "img": "images/sedlacek_o.jpg"},
+    # {"tit": "Porézní polymery", "lead": "doc. Jan Sedláček", "img": "images/sedlacek_j.jpg"},
+    # {"tit": "Soft matter", "lead": "prof. Miroslav Štěpánek", "img": "images/stepanek.jpg"},
+    # {"tit": "Soft matter teorie", "lead": "prof. Filip Uhlík", "img": "images/uhlik.jpg"},
+    # {"tit": "Makromolekulové modelování", "lead": "doc. Peter Košovan", "img": "images/kosovan.jpg"},
 ]
 
 # --- Helper: Blurred Background ---
@@ -70,15 +70,15 @@ def generate_video():
     clips = []
 
     # 1. Intro: Building [cite: 5-6]
-    intro_img = ImageClip("hlavova8.jpg").resized(height=1200).with_duration(3)
+    intro_img = ImageClip("images/hlavova8.jpg").resized(height=1200).with_duration(3)
     intro_txt = create_text("Katedra fyzikální a\nmakromolekulární chemie", fontsize=90).with_position('center').with_duration(3)
     clips.append(CompositeVideoClip([intro_img, intro_txt]).with_effects([vfx.FadeOut(0.5)]))
 
     # 2. History: Heyrovský [cite: 8-10]
     history_scenes = [
-        ("3a.jpg", "Katedru fyzikální chemie založil v roce 1921 prof. Jaroslav Heyrovský…"),
-        ("3b.jpg", "Známý pro svůj objev polarografie…"),
-        ("3c.jpg", "… za který mu byla v roce 1959 udělena Nobelova cena za chemii.")
+        ("images/3a.jpg", "Katedru fyzikální chemie založil v roce 1921 prof. Jaroslav Heyrovský…"),
+        ("images/3b.jpg", "Známý pro svůj objev polarografie…"),
+        ("images/3c.jpg", "… za který mu byla v roce 1959 udělena Nobelova cena za chemii.")
     ]
     for img, txt in history_scenes:
         bg = make_blurred_bg(img, 5)
@@ -87,14 +87,14 @@ def generate_video():
         clips.append(CompositeVideoClip([bg, main, txt_c]).with_effects([vfx.FadeIn(0.5), vfx.FadeOut(0.5)]))
 
     # 3. Action Montage: Fast paced labs [cite: 13]
-    lab_photos = ["lab1.jpg", "lab2.jpg", "lab3.jpg", "lab4.jpg", "lab5.jpg"]
+    lab_photos = ["images/lab1.jpg", "images/lab2.jpg", "images/lab3.jpg", "images/lab4.jpg", "images/lab5.jpg"]
     montage = [ImageClip(p).resized(height=1200).with_duration(0.8).with_effects([vfx.FadeIn(0.1)]) for p in lab_photos]
     clips.append(concatenate_videoclips(montage))
 
     # 4. Awards [cite: 14-16]
     award_imgs = [
-        # ("eliasova_neuron.jpg", "Pavla Eliášová – Cena Neuron"), 
-        ("shamzy_neuron_2.jpg", "Maria Shamzy – Cena Neuron")]
+        # ("images/eliasova_neuron.jpg", "Pavla Eliášová – Cena Neuron"), 
+        ("images/shamzy_neuron_2.jpg", "Maria Shamzy – Cena Neuron")]
     for img, txt in award_imgs:
         clips.append(CompositeVideoClip([make_blurred_bg(img, 4), 
                      ImageClip(img).resized(height=900).with_position('center'),
@@ -107,7 +107,7 @@ def generate_video():
         clips.append(make_research_slide(group))
 
     # 6. Final Accelerating Montage 
-    final_people = ["person_JC.jpg", "person_FU.jpg", "person_MO.jpg", "person_MS.jpg", "person_JP.jpg"]
+    final_people = ["images/person_JC.jpg", "images/person_FU.jpg", "images/person_MO.jpg", "images/person_MS.jpg", "images/person_JP.jpg"]
     accel_clips = []
     for i, p in enumerate(final_people):
         dur = max(0.2, 1.0 - (i * 0.15)) # Gets faster

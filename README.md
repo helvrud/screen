@@ -29,9 +29,9 @@ Then visit `http://localhost:8000`.
 
 ## Assets
 
-- `person_*.jpg`: Photos of department members.
-- `heyrovsky*.jpg`: Historical photos related to Jaroslav Heyrovský.
-- `lab*.2000px.jpg`: Optimized laboratory and research photos.
+- `images/person_*.jpg`: Photos of department members.
+- `images/heyrovsky*.jpg`: Historical photos related to Jaroslav Heyrovský.
+- `images/lab*.2000px.jpg`: Optimized laboratory and research photos.
 
 ## Controls
 

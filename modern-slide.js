@@ -1,12 +1,12 @@
 // modern-slide.js
 
 const modernImagesData = [
-    { file: "lab1.2000px.jpg", name: "Lab 1" },
-    { file: "lab2.2000px.jpg", name: "Lab 2" },
-    { file: "lab3.2000px.jpg", name: "Lab 3" },
-    { file: "lab4.2000px.jpg", name: "Lab 4" },
-    { file: "lab5.2000px.jpg", name: "Lab 5" },
-    { file: "lab6.2000px.jpg", name: "Soft-Matter Theory Group" }
+    { file: "images/lab1.2000px.jpg", name: "Lab 1" },
+    { file: "images/lab2.2000px.jpg", name: "Lab 2" },
+    { file: "images/lab3.2000px.jpg", name: "Lab 3" },
+    { file: "images/lab4.2000px.jpg", name: "Lab 4" },
+    { file: "images/lab5.2000px.jpg", name: "Lab 5" },
+    { file: "images/lab6.2000px.jpg", name: "Soft-Matter Theory Group" }
 ];
 
 const modernElements = [];
@@ -45,31 +45,35 @@ function playModernSlide() {
     window.activeTimeline = gsap.timeline({ onComplete: nextSlide });
 
     // CRITICAL: Reset all positions and states at start of every cycle
-    // This prevents the "buggy second run" where elements might be left in end-statestates
     gsap.set(modernElements.map(e => e.img), {
         opacity: 0,
         visibility: 'hidden',
         top: '50%', left: '50%',
-        width: '60vh', height: '40vh', // Start size
+        width: '0vh', height: '0vh', // Start from nothing
         scale: 1
     });
     gsap.set(modernElements.map(e => e.label), { opacity: 0, visibility: 'hidden' });
 
     modernElements.forEach((obj, i) => {
         const rect = obj.slot.getBoundingClientRect();
-        // Slightly faster cadence than people slide
-        const start = i * 3.5;
+        const start = i * 2.8; // Slightly faster cadence
 
         window.activeTimeline
-            // 1. Appear in center
+            // 1. Blow up from center
             .set([obj.img, obj.label], { visibility: 'visible' }, start)
-            .to(obj.img, { opacity: 1, duration: 0.8, ease: "back.out(1.2)" }, start)
+            .to(obj.img, {
+                opacity: 1,
+                width: "66vw", // 2/3 of screen width
+                height: "66vh", // 2/3 of screen height
+                duration: 0.8,
+                ease: "back.out(1.2)"
+            }, start)
 
             // 2. Show Label
             .to(obj.label, { opacity: 1, duration: 0.5 }, start + 0.2)
 
             // 3. Hide Label
-            .to(obj.label, { opacity: 0, duration: 0.3 }, start + 2.5)
+            .to(obj.label, { opacity: 0, duration: 0.3 }, start + 1.8)
 
             // 4. Move to Grid Slot
             .to(obj.img, {
@@ -79,7 +83,7 @@ function playModernSlide() {
                 height: rect.height,
                 duration: 1.2,
                 ease: "power3.inOut"
-            }, start + 2.5);
+            }, start + 1.8);
     });
 
     // Hold final state then fade out
