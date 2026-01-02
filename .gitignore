@@ -1,0 +1,17 @@
+# Large assets
+*.mp4
+*.MOV
+lab*.jpg
+hlavova8.jpg
+
+# Keep optimized versions
+!lab*.1000px.jpg
+!lab*.2000px.jpg
+!hlavova8.2000px.jpg
+
+# Python scripts (if not needed for production)
+# *.py
+
+# OS files
+.DS_Store
+Thumbs.db

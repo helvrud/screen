@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhysChem Department Presentation</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://www.youtube.com/iframe_api"></script>
+</head>
+<body>
+
+    <div id="nav-prev" class="nav-arrow" onclick="prevSlide()">&#10094;</div>
+    <div id="nav-next" class="nav-arrow" onclick="nextSlide()">&#10095;</div>
+
+    <div id="slide-intro" class="slide">
+        <div class="slide-content">
+            <h1 class="title-large">Department of Physical and Macromolecular Chemistry</h1>
+            <p class="subtitle">Charles University</p>
+        </div>
+    </div>
+
+    <div id="slide-history" class="slide">
+        <div class="slide-content">
+            <h4 id="history-year" class="subtitle" style="font-size: 3.5rem; margin-bottom: 0;"></h4>
+            <h2 id="history-title" class="title-large"></h2>
+        </div>
+    </div>
+
+    <div id="slide-modern" class="slide">
+        <div id="modern-grid-container" class="masonry-grid"></div>
+        <h1 class="title-large" style="margin-top: 20px;">Dnes tvoříme budoucnost</h1>
+    </div>
+
+    <div id="slide-people" class="slide"> 
+        <h1 class="title-large">People of the Department</h1>
+        <div id="grid-container"></div> 
+    </div>
+
+    <div id="slide-awards" class="slide">
+        <h2 class="title-large">Awards & Honors</h2>
+        <p class="content-text">Home to Neuron Award winners, ERC grant recipients, and Heyrovský Medalists.</p>
+    </div>
+
+    <div id="slide-video" class="slide" style="padding:0; justify-content:center;">
+        <div id="player"></div>
+    </div>
+
+    <script src="intro-slide.js"></script>
+    <script src="history-slide.js"></script>
+    <script src="people-slide.js"></script>
+    <script src="modern-slide.js"></script>
+    <script src="video-slide.js"></script> 
+    <script src="main.js"></script>
+</body>
+</html>
