@@ -9,15 +9,24 @@ function initPlayer() {
             'autoplay': 1,
             'controls': 0,
             'rel': 0,
-            'mute': 1, // <--- CRITICAL: Mute to allow autoplay
-            'enablejsapi': 1
+            'mute': 1,
+            'enablejsapi': 1,
+            'iv_load_policy': 3, // Disable annotations
+            'modestbranding': 1
         },
         events: {
             'onReady': (event) => {
-                event.target.mute(); // Ensure muted on ready
+                event.target.mute();
             },
             'onStateChange': (event) => {
-                if (event.data === YT.PlayerState.ENDED) nextSlide();
+                // If the video ended, move to next slide
+                if (event.data === YT.PlayerState.ENDED) {
+                    nextSlide();
+                }
+                // If the video started playing, fade it in to avoid "previous frame flash"
+                if (event.data === YT.PlayerState.PLAYING) {
+                    gsap.to('#player', { opacity: 1, duration: 0.5 });
+                }
             }
         }
     });
@@ -26,22 +35,23 @@ function initPlayer() {
 // Ensure function is globally accessible for the API
 window.onYouTubeIframeAPIReady = initPlayer;
 
-// Safety check: If API loaded before this script, init manually
 if (window.YT && window.YT.Player) {
     initPlayer();
 }
 
 function playVideoSlide(videoId) {
     const el = document.getElementById('slide-video');
-    gsap.set(".slide", { visibility: "hidden", opacity: 0 });
+
+    // 1. Hide the slide and the player initially
     gsap.set(el, { visibility: "visible", opacity: 1 });
+    gsap.set('#player', { opacity: 0 });
 
     if (player && player.loadVideoById) {
+        // 2. Load the new video
         player.loadVideoById(videoId);
+        player.mute();
         player.playVideo();
-        player.mute(); // Double-ensure it's muted so it doesn't stay black
     } else {
-        // If API isn't ready yet, wait and try again
         setTimeout(() => playVideoSlide(videoId), 500);
     }
 }

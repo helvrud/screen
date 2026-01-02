@@ -105,17 +105,20 @@ html {
     margin-bottom: 20px;
 }
 
-/* --- Grid & Portraits --- */
-#grid-container {
+/* --- Shared Grid Style --- */
+.presentation-grid {
     display: grid;
+    gap: 20px;
+    margin: auto auto;
+    z-index: 5;
+}
+
+/* --- People Grid (4x4) --- */
+#grid-container {
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: repeat(4, 1fr);
-    gap: 15px;
     width: min(70vw, 70vh);
     height: min(70vw, 70vh);
-    margin-bottom: auto;
-    margin-top: auto;
-    z-index: 5;
 }
 
 .slot {
@@ -195,15 +198,10 @@ body:hover .nav-arrow {
 
 /* --- Modern Grid (3x2) --- */
 #modern-grid-container {
-    display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(2, 1fr);
-    gap: 20px;
     width: 85vw;
     height: 60vh;
-    /* Landscape friendly */
-    margin: 0 auto;
-    z-index: 5;
 }
 
 /* Reusing .slot, .person-photo styles but adapting for modern slide naming if needed. 
@@ -242,6 +240,13 @@ body:hover .nav-arrow {
 
 #slide-video::before {
     display: none !important;
+}
+
+#player {
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 0.5s ease;
 }
 
 #slide-video {
