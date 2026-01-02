@@ -1,7 +1,7 @@
 // history-slide.js
 let historyIndex = 0;
 const historyData = [
-    { year: "1921", title: "Katedru fyzikální chemie založit v roce 1921 prof. Jaroslav Heyrovský", img: "images/heyrovsky2.jpg" },
+    { year: "1921", title: "Katedru fyzikální chemie založil v roce 1921 prof. Jaroslav Heyrovský", img: "images/heyrovsky2.jpg" },
     { year: "1922", title: "Známý pro svůj objev polarografie", img: "images/heyrovsky1.jpg" },
     { year: "1959", title: "za který mu byla v roce 1959 udělena Nobelova cena za chemii.", img: "images/heyrovsky4.jpg" }
 ];
