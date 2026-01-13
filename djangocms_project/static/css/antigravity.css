@@ -1,0 +1,307 @@
+/* antigravity.css */
+:root {
+    --university-blue: #003366;
+    --accent-gold: #D4AF37;
+    --bg-dark: #050505;
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+body,
+html {
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg-dark);
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: white;
+}
+
+/* Kiosk Mode Support */
+body.kiosk-mode {
+    cursor: none;
+}
+
+#particles-js {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* --- Shared Slide Styles --- */
+.slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    visibility: hidden;
+    opacity: 0;
+    text-align: center;
+    padding-bottom: 8vh;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: var(--bg-dark);
+    z-index: 1;
+    isolation: isolate;
+    will-change: opacity, visibility;
+    box-sizing: border-box;
+}
+
+/* FALLBACK: Make at least the first slide visible by default */
+.slide:first-of-type {
+    visibility: visible;
+    opacity: 1;
+    z-index: 5;
+}
+
+/* Fade Gradient Overlay */
+.slide::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to top,
+            rgba(0, 0, 0, 0.95) 0%,
+            rgba(0, 0, 0, 0.4) 50%,
+            rgba(0, 0, 0, 0) 100%);
+    z-index: 2;
+    pointer-events: none;
+}
+
+/* --- Content Wrapper --- */
+.slide-content {
+    position: relative;
+    z-index: 10;
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* --- Typography --- */
+.title-large {
+    font-size: 3rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin: 0;
+    text-shadow: 0 4px 15px rgba(0, 0, 0, 0.8);
+    color: white;
+}
+
+.subtitle {
+    font-size: 1.5rem;
+    color: white;
+    /* Changed from var(--accent-gold) to match original */
+    margin: 5px 0 0 0;
+    font-weight: 300;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+}
+
+.content-text {
+    font-size: 1.6rem;
+    /* Restored to 1.6rem */
+    max-width: 900px;
+    line-height: 1.5;
+    margin-bottom: 20px;
+}
+
+/* --- Navigation --- */
+.nav-arrow {
+    position: fixed;
+    top: 0;
+    height: 100vh;
+    width: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: white;
+    z-index: 900;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.3s;
+    user-select: none;
+}
+
+body:hover .nav-arrow {
+    opacity: 0.3;
+}
+
+.nav-arrow:hover {
+    opacity: 1 !important;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+#nav-prev {
+    left: 0;
+}
+
+#nav-next {
+    right: 0;
+}
+
+/* Handle DjangoCMS Toolbar */
+.cms-toolbar-expanded #nav-prev,
+.cms-toolbar-expanded #nav-next {
+    top: 46px;
+    height: calc(100vh - 46px);
+}
+
+/* --- Plugin Specific Layouts --- */
+
+/* Intro Slide */
+.slide-intro {
+    justify-content: center;
+}
+
+/* History / Alternating */
+.slide-history {
+    background-size: contain;
+    justify-content: flex-end;
+}
+
+/* Modern Gallery */
+.masonry-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 20px;
+    width: 85vw;
+    height: 60vh;
+    margin: auto;
+    z-index: 5;
+}
+
+.grid-item {
+    background: rgba(255, 255, 255, 0.05);
+    /* Match .slot */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    /* Match .slot */
+    border-radius: 4px;
+    /* Match .slot */
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.grid-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* People Grid */
+.people-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    /* Added for aspect ratio */
+    gap: 20px;
+    width: min(70vw, 70vh);
+    /* Match #grid-container */
+    height: min(70vw, 70vh);
+    /* Match #grid-container */
+    margin: auto;
+    z-index: 5;
+}
+
+/* These slots act as the placeholders */
+.slot {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    width: 100%;
+    height: 100%;
+}
+
+.person-photo {
+    position: fixed;
+    z-index: 100;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60vh;
+    height: 60vh;
+    object-fit: cover;
+    object-position: center 15%;
+    border-radius: 4px;
+    aspect-ratio: 1/1;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+    visibility: hidden;
+    opacity: 0;
+}
+
+.person-label {
+    position: fixed;
+    z-index: 110;
+    top: calc(50% + 32vh);
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 2rem;
+    font-weight: bold;
+    color: white;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 10px 25px;
+    border-radius: 5px;
+    visibility: hidden;
+    opacity: 0;
+}
+
+.person-label h3 {
+    margin: 0;
+    font-size: 2rem;
+}
+
+.person-label p {
+    display: none;
+    /* The static version usually showed just the name on the big label */
+}
+
+
+/* YouTube Embed */
+.video-container {
+    position: relative;
+    width: 80vw;
+    aspect-ratio: 16/9;
+    background: #000;
+    z-index: 5;
+    margin: auto;
+}
+
+/* Admin/Edit Mode Adjustments */
+/* Only force stack layout in structure mode or when explicitly editing */
+.cms-structure-mode .slide,
+.cms-edit-mode .slide {
+    position: relative !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    height: auto !important;
+    min-height: 40vh;
+    margin-bottom: 20px;
+    z-index: 10 !important;
+}
+
+.cms-edit-mode body {
+    overflow: auto !important;
+}
+
+.cms-edit-mode .nav-arrow,
+.cms-toolbar-expanded .nav-arrow {
+    display: none !important;
+}
