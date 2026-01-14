@@ -1,0 +1,64 @@
+{% load thumbnail sekizai_tags %}
+
+<div class="slide slide-modern cms-plugin-slide" data-slide-type="gallery">
+    <h1 class="title-large" style="margin-bottom: 20px;">{{ instance.title }}</h1>
+
+    {% if instance.description %}
+    <p class="subtitle" style="margin-bottom: 20px;">{{ instance.description }}</p>
+    {% endif %}
+
+    <div class="masonry-grid" id="masonry-grid-{{ instance.id }}">
+        {% for item in images %}
+        <div class="masonry-item">
+            <img src="{{ item.image.url }}" alt="{{ item.caption }}" class="gallery-photo">
+            {% if item.caption %}
+            <div class="gallery-caption">{{ item.caption }}</div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% addtoblock "js" %}
+<script>
+    (function () {
+        window.SlideHandlers.gallery = function (element, completeCallback) {
+            const timeline = gsap.timeline({ onComplete: completeCallback });
+            const slide = element;
+
+            // Shuffle Items in DOM (Client-side Randomization)
+            const grid = slide.querySelector('.masonry-grid');
+            if (grid) {
+                const items = Array.from(grid.querySelectorAll('.masonry-item'));
+                // Random sort
+                items.sort(() => Math.random() - 0.5);
+                // Re-append in new order
+                items.forEach(item => grid.appendChild(item));
+            }
+
+            gsap.set(slide, { visibility: "visible", opacity: 1 });
+
+            // Stagger fade in items
+            const items = slide.querySelectorAll('.masonry-item');
+
+            // Ensure they are visible to start (in case of CSS opacity issues) but 0 opacity for fade
+            gsap.set(items, { opacity: 0, y: 50, visibility: 'visible' });
+
+            if (items.length > 0) {
+                // Use .to() which is sometimes more reliable than fromTo if state is already set
+                timeline.to(items,
+                    { opacity: 1, y: 0, duration: 0.8, stagger: 0.1, ease: "power2.out" }
+                );
+            }
+
+            // Hold then fade out
+            timeline
+                .to({}, { duration: 5 })
+                .to(items, { opacity: 0, y: -20, duration: 0.5, stagger: 0.05 }) // Nice exit
+                .to(slide, { opacity: 0, duration: 1 });
+
+            return timeline;
+        };
+    })();
+</script>
+{% endaddtoblock %}

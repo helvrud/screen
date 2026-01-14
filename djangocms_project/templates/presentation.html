@@ -1,0 +1,72 @@
+{% load cms_tags sekizai_tags static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% page_attribute "page_title" %}</title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/antigravity.css' %}">
+
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <!-- YouTube API -->
+    <script>
+        // Define callback functionality BEFORE loading the API
+        window.onYouTubeIframeAPIReady = function () {
+            window.player = new YT.Player('player', {
+                height: '100%',
+                width: '100%',
+                playerVars: { 'autoplay': 1, 'controls': 0, 'rel': 0, 'mute': 1, 'enablejsapi': 1, 'modestbranding': 1 },
+                events: {
+                    'onStateChange': (event) => {
+                        if (event.data === YT.PlayerState.ENDED) {
+                            if (window.currentVideoCompleteCallback) window.currentVideoCompleteCallback();
+                        }
+                        if (event.data === YT.PlayerState.PLAYING) {
+                            gsap.to('#player', { opacity: 1, duration: 0.5 });
+                        }
+                    }
+                }
+            });
+        };
+    </script>
+    <script src="https://www.youtube.com/iframe_api"></script>
+
+    {% render_block "css" %}
+</head>
+
+<body>
+    <!-- Navigation Arrows -->
+    <div id="nav-prev" class="nav-arrow" onclick="window.prevSlide()">&#10094;</div>
+    <div id="nav-next" class="nav-arrow" onclick="window.nextSlide()">&#10095;</div>
+
+    <!-- CMS Toolbar -->
+    {% cms_toolbar %}
+
+    <!-- Main Content (Slides) -->
+    <main id="main-content">
+        {% placeholder "content" %}
+    </main>
+
+    <!-- Video Player Container (Shared) -->
+    <div id="slide-video-shared" class="slide"
+        style="padding:0; justify-content:center; visibility: hidden; opacity: 0; pointer-events: none;">
+        <div id="player"></div>
+    </div>
+
+    <script>
+        // Initialize handlers namespace for plugins to attach to
+        window.SlideHandlers = window.SlideHandlers || {};
+    </script>
+
+    {% render_block "js" %}
+
+    <!-- Presentation Logic -->
+    <script src="{% static 'js/presentation.js' %}?v=7"></script>
+</body>
+
+</html>

@@ -1,0 +1,8 @@
+Django>=4.2,<5.0
+django-cms>=4.1,<4.2
+djangocms-admin-style>=3.2
+djangocms-text-ckeditor>=5.1
+django-filer>=3.1
+easy-thumbnails>=2.8
+Pillow>=10.0
+django-treebeard>=4.7

@@ -1,0 +1,49 @@
+{% load sekizai_tags %}
+<div class="slide slide-video cms-plugin-slide" data-slide-type="youtube_embed"
+    data-youtube-id="{{ instance.youtube_id }}">
+    <!-- Video is dynamically loaded into #slide-video-shared when active -->
+    <h2 style="font-size: 2rem; margin-bottom: 20px;">{{ instance.video_title }}</h2>
+    <div style="font-size: 1.2rem; opacity: 0.7;">(Video will play automatically)</div>
+</div>
+
+{% addtoblock "js" %}
+<script>
+    (function () {
+        window.SlideHandlers.youtube_embed = function (element, completeCallback) {
+            const videoId = element.dataset.youtubeId;
+            const sharedContainer = document.getElementById('slide-video-shared');
+
+            // Move focus to shared container
+            gsap.set(sharedContainer, { visibility: "visible", opacity: 1, pointerEvents: "auto" });
+            gsap.set('#player', { opacity: 0 });
+
+            // Helper to bridge the end of video to callback
+            window.currentVideoCompleteCallback = () => {
+                gsap.to(sharedContainer, {
+                    opacity: 0, duration: 1, onComplete: () => {
+                        gsap.set(sharedContainer, { visibility: 'hidden', pointerEvents: "none" });
+                        completeCallback();
+                    }
+                });
+            };
+
+            if (window.player && window.player.loadVideoById) {
+                window.player.loadVideoById({
+                    videoId: videoId,
+                    suggestedQuality: 'highres'
+                });
+                window.player.setPlaybackQuality('highres');
+                window.player.mute();
+                window.player.playVideo();
+            } else {
+                console.error("YouTube Player not initialized");
+                // Retry once or skip
+                setTimeout(completeCallback, 2000);
+            }
+
+            // Return a dummy timeline effectively, as control is handed to YT events
+            return gsap.timeline();
+        };
+    })();
+</script>
+{% endaddtoblock %}

@@ -59,6 +59,9 @@
         // Reset all slides to hidden (except the current one we are about to animate handles itself usually)
         gsap.set('.cms-plugin-slide', { visibility: 'hidden', opacity: 0, zIndex: 1 });
 
+        // Explicitly hide shared video container in case it was left open
+        gsap.set('#slide-video-shared', { visibility: 'hidden', opacity: 0, zIndex: 1, pointerEvents: 'none' });
+
         // Bring current to front (z-index)
         gsap.set(currentSlideElement, { zIndex: 10 });
 
@@ -118,5 +121,68 @@
             return;
         }
         initPresentation();
+
+        // --- Mouse Idle Hider ---
+        let idleTimer;
+
+        function showCursor() {
+            document.body.style.cursor = 'auto';
+            document.body.classList.remove('kiosk-mode');
+
+            // Also ensure arrows are visible if they rely on hover
+            const arrows = document.querySelectorAll('.nav-arrow');
+            arrows.forEach(a => a.style.opacity = ''); // Reset to CSS default (or visible)
+
+            // PAUSE PRESENTATION
+            if (window.activeTimeline) {
+                window.activeTimeline.pause();
+            }
+            // Pause YouTube if active
+            if (window.player && typeof window.player.pauseVideo === 'function') {
+                // Check if current slide is video type to avoid pausing if it wasn't playing?
+                // Actually, safer to just try pausing if player exists.
+                // But wait, if we pause, we need to know if we should resume.
+                // For simplicity: yes, resume if it was playing. But simpler: just pause/play.
+                try {
+                    const state = window.player.getPlayerState();
+                    if (state === YT.PlayerState.PLAYING || state === YT.PlayerState.BUFFERING) {
+                        window.player.pauseVideo();
+                        window.wasVideoPlaying = true;
+                    }
+                } catch (e) { }
+            }
+
+            clearTimeout(idleTimer);
+            idleTimer = setTimeout(hideCursor, 5000);
+        }
+
+        function hideCursor() {
+            document.body.style.cursor = 'none';
+            document.body.classList.add('kiosk-mode');
+
+            // Optional: Hide arrows too for cleaner look
+            const arrows = document.querySelectorAll('.nav-arrow');
+            arrows.forEach(a => a.style.opacity = '0');
+
+            // RESUME PRESENTATION
+            if (window.activeTimeline) {
+                window.activeTimeline.play();
+            }
+            if (window.player && window.wasVideoPlaying && typeof window.player.playVideo === 'function') {
+                window.player.playVideo();
+                window.wasVideoPlaying = false;
+            }
+        }
+
+        window.addEventListener('mousemove', showCursor);
+        window.addEventListener('mousedown', showCursor);
+        window.addEventListener('touchstart', showCursor);
+
+        // Start timer
+        showCursor();
     });
+
+    // --- YOUTUBE API SETUP ---
+    // --- YOUTUBE API SETUP ---
+    // Moved to presentation.html head to ensure timely execution
 })();

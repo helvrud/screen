@@ -1,0 +1,49 @@
+{% load thumbnail sekizai_tags %}
+
+{% addtoblock "js" %}
+<script>
+    // Register this slide type presence if needed, though presentation.js scans DOM
+</script>
+{% endaddtoblock %}
+
+{% if instance.background_image %}
+<div class="slide slide-intro cms-plugin-slide" data-slide-type="intro"
+    style="background-image: url('{{ instance.background_image.url }}');">
+    {% else %}
+    <div class="slide slide-intro cms-plugin-slide" data-slide-type="intro">
+        {% endif %}
+        <div class="slide-content">
+            <h1 class="title-large">{{ instance.headline }}</h1>
+            <p class="subtitle" style="margin-top: 10px;">{{ instance.sub_headline }}</p>
+        </div>
+    </div>
+
+    {% addtoblock "js" %}
+    <script>
+        (function () {
+            window.SlideHandlers.intro = function (element, completeCallback) {
+                const timeline = gsap.timeline({ onComplete: completeCallback });
+
+                // Force start state
+                gsap.set(element, { visibility: 'visible', opacity: 0 });
+
+                timeline
+                    .to(element, {
+                        opacity: 0.999,
+                        duration: 1.5,
+                        ease: "power2.inOut"
+                    })
+                    .to(element, { opacity: 0.999, duration: 4 })
+                    .to(element, {
+                        opacity: 0,
+                        duration: 1,
+                        onComplete: () => gsap.set(element, { visibility: 'hidden' })
+                    });
+
+                return timeline;
+
+                return timeline;
+            };
+        })();
+    </script>
+    {% endaddtoblock %}

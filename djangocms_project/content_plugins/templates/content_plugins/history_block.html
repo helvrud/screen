@@ -1,0 +1,32 @@
+{% load thumbnail %}
+
+{% load sekizai_tags %}
+<div class="slide slide-history cms-plugin-slide" data-slide-type="history"
+    style="{% if instance.image %}background-image: url('{{ instance.image.url }}');{% endif %}">
+    <div class="slide-content">
+        <h4 id="history-year" class="subtitle" style="font-size: 3.5rem; margin-bottom: 0;">{{ instance.title }}</h4>
+        <div class="content-text">{{ instance.body_text|safe }}</div>
+    </div>
+</div>
+
+{% addtoblock "js" %}
+<script>
+    (function () {
+        window.SlideHandlers.history = function (element, completeCallback) {
+            // Note: The CMS version renders all history blocks as separate slides in the DOM sequence
+            // unlike the static version which cycled arrays. This simplifies things!
+
+            const timeline = gsap.timeline({ onComplete: completeCallback });
+
+            // Force start state
+            gsap.set(element, { visibility: 'visible', opacity: 0 });
+
+            timeline
+                .to(element, { opacity: 1, duration: 1.2 })
+                .to(element, { opacity: 0, duration: 0.8, delay: 4, onComplete: () => gsap.set(element, { visibility: 'hidden' }) });
+
+            return timeline;
+        };
+    })();
+</script>
+{% endaddtoblock %}

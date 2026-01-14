@@ -1,0 +1,62 @@
+{% load cms_tags sekizai_tags static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Physics and Chemistry Department - physchem.cz">
+    <title>{% page_attribute "page_title" %} - Physics & Chemistry Department</title>
+
+    <!-- Particles.js for background effects -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+
+    <!-- AOS (Animate On Scroll) -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Orbitron:wght@400;700;900&family=Comfortaa:wght@300..700&display=swap"
+        rel="stylesheet">
+
+    <!-- GSAP (Required for animations.js) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/antigravity.css' %}?v=8">
+
+    {% render_block "css" %}
+</head>
+
+<body>
+    <!-- Particles background -->
+    <div id="particles-js"></div>
+
+    <!-- CMS Toolbar -->
+    {% cms_toolbar %}
+
+    <main id="main-content">
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Custom JS -->
+    <script src="{% static 'js/animations.js' %}"></script>
+
+    {% render_block "js" %}
+
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 1000,
+            once: false,
+            mirror: true,
+            offset: 100
+        });
+    </script>
+</body>
+
+</html>

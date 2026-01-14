@@ -1,0 +1,24 @@
+services:
+  web:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: djangocms_web
+    user: "1000:1000"
+    command: python manage.py runserver 0.0.0.0:8000
+    env_file:
+      - .env
+    volumes:
+      # Mount the entire project directory for live-reloading
+      - ..:/app
+      # Ensure media and static files are persistent and handled by Docker volumes if needed
+      # but usually during dev, we just use the host mounts if we want to see them on host
+      # - media_files:/app/media
+      - static_files:/app/staticfiles
+    ports:
+      - "8001:8000"
+    stdin_open: true
+    tty: true
+
+volumes:
+  static_files:
