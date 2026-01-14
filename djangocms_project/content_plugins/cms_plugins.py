@@ -13,9 +13,11 @@ from .models import (
     GalleryPlugin,
     PeopleGridPlugin,
     YouTubeEmbedPlugin,
+    ModernSlidePlugin,
     Person,
     PeopleGridImage,
-    GalleryImage
+    GalleryImage,
+    ModernSlideItem
 )
 
 from django.contrib import admin
@@ -30,6 +32,10 @@ class PeopleGridImageInline(admin.StackedInline):
 
 class GalleryImageInline(admin.StackedInline):
     model = GalleryImage
+    extra = 0
+
+class ModernSlideItemInline(admin.StackedInline):
+    model = ModernSlideItem
     extra = 0
 
 @plugin_pool.register_plugin
@@ -140,4 +146,19 @@ class YouTubeEmbedCMSPlugin(CMSPluginBase):
         context = super().render(context, instance, placeholder)
         context['instance'] = instance
         context['embed_url'] = instance.get_embed_url()
+        return context
+
+@plugin_pool.register_plugin
+class ModernSlideCMSPlugin(CMSPluginBase):
+    model = ModernSlidePlugin
+    name = _("Modern Grid Slide")
+    render_template = "content_plugins/modern_grid.html"
+    cache = True
+    module = _("Presentation Plugins")
+    inlines = [ModernSlideItemInline]
+
+    def render(self, context, instance, placeholder):
+        context = super().render(context, instance, placeholder)
+        context['instance'] = instance
+        # Items are already available via instance.items
         return context

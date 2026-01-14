@@ -9,7 +9,35 @@ from filer.fields.image import FilerImageField
 from filer.fields.folder import FilerFolderField
 
 
-class IntroSlidePlugin(CMSPlugin):
+class BaseSlidePlugin(CMSPlugin):
+    """
+    Abstract base class for all slide plugins to share common fields
+    """
+    department_title = models.CharField(
+        max_length=200,
+        default="Department of Physical and Macromolecular Chemistry",
+        verbose_name="Department Title",
+        help_text="Identity text displayed at the top of the slide"
+    )
+    department_logo = FilerImageField(
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="%(app_label)s_%(class)s_logos",
+        verbose_name="Department Logo"
+    )
+    department_website = models.URLField(
+        max_length=500,
+        default="https://www.natur.cuni.cz/chemistry/fyzchem",
+        verbose_name="Department Website",
+        help_text="URL for the QR code"
+    )
+
+    class Meta:
+        abstract = True
+
+
+class IntroSlidePlugin(BaseSlidePlugin):
     """
     Plugin 1: Full-screen hero section with headline and background image
     """
@@ -38,7 +66,7 @@ class IntroSlidePlugin(CMSPlugin):
         verbose_name_plural = "Intro Slides"
 
 
-class HistoryBlockPlugin(CMSPlugin):
+class HistoryBlockPlugin(BaseSlidePlugin):
     """
     Plugin 2: Image + Text block for storytelling sequences
     """
@@ -66,7 +94,7 @@ class HistoryBlockPlugin(CMSPlugin):
         verbose_name_plural = "History Blocks"
 
 
-class GalleryPlugin(CMSPlugin):
+class GalleryPlugin(BaseSlidePlugin):
     """
     Plugin 3: Modern gallery with multiple images
     """
@@ -128,7 +156,7 @@ class GalleryImage(models.Model):
         verbose_name_plural = "Gallery Images"
 
 
-class PeopleGridPlugin(CMSPlugin):
+class PeopleGridPlugin(BaseSlidePlugin):
     """
     Plugin 4: Staff profiles grid
     """
@@ -223,7 +251,7 @@ class PeopleGridImage(models.Model):
         verbose_name_plural = "Grid Images"
 
 
-class YouTubeEmbedPlugin(CMSPlugin):
+class YouTubeEmbedPlugin(BaseSlidePlugin):
     """
     Plugin 5: Responsive YouTube video embed
     """
@@ -247,3 +275,51 @@ class YouTubeEmbedPlugin(CMSPlugin):
     class Meta:
         verbose_name = "YouTube Embed"
         verbose_name_plural = "YouTube Embeds"
+
+class ModernSlidePlugin(BaseSlidePlugin):
+    """
+    Plugin for showing a grid of images with staggered animations
+    """
+    title = models.CharField(
+        max_length=200,
+        verbose_name="Slide Title",
+        default="Modern Highlights"
+    )
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = "Modern Grid Slide"
+        verbose_name_plural = "Modern Grid Slides"
+
+
+class ModernSlideItem(models.Model):
+    """
+    Individual items for the Modern Grid Slide
+    """
+    plugin = models.ForeignKey(
+        ModernSlidePlugin,
+        on_delete=models.CASCADE,
+        related_name="items"
+    )
+    image = FilerImageField(
+        on_delete=models.CASCADE,
+        related_name="modern_slide_images",
+        verbose_name="Image"
+    )
+    subtitle = models.CharField(
+        max_length=200,
+        blank=True,
+        verbose_name="Subtitle/Label"
+    )
+    order = models.PositiveIntegerField(
+        default=0,
+        verbose_name="Order"
+    )
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        return self.subtitle or f"Item {self.pk}"

@@ -2,7 +2,10 @@
 
 {% load sekizai_tags %}
 <div class="slide slide-history cms-plugin-slide" data-slide-type="history"
-    style="{% if instance.image %}background-image: url('{{ instance.image.url }}');{% endif %}">
+    style="{% if instance.image %}background-image: url('{{ instance.image.url }}');{% endif %}"
+    data-dept-title="{{ instance.department_title }}"
+    data-dept-logo="{% if instance.department_logo %}{{ instance.department_logo.url }}{% endif %}"
+    data-dept-url="{{ instance.department_website }}">
     <div class="slide-content">
         <h4 id="history-year" class="subtitle" style="font-size: 3.5rem; margin-bottom: 0;">{{ instance.title }}</h4>
         <div class="content-text">{{ instance.body_text|safe }}</div>

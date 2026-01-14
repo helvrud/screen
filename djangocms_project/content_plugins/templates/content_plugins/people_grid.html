@@ -1,6 +1,9 @@
 {% load thumbnail static sekizai_tags %}
 
-<div class="slide slide-people cms-plugin-slide" data-slide-type="people_grid">
+<div class="slide slide-people cms-plugin-slide" data-slide-type="people_grid"
+    data-dept-title="{{ instance.department_title }}"
+    data-dept-logo="{% if instance.department_logo %}{{ instance.department_logo.url }}{% endif %}"
+    data-dept-url="{{ instance.department_website }}">
     <div class="slide-content">
         <h1 class="title-large">{{ instance.title }}</h1>
 

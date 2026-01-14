@@ -1,6 +1,9 @@
 {% load thumbnail sekizai_tags %}
 
-<div class="slide slide-modern cms-plugin-slide" data-slide-type="gallery">
+<div class="slide slide-modern cms-plugin-slide" data-slide-type="gallery"
+    data-dept-title="{{ instance.department_title }}"
+    data-dept-logo="{% if instance.department_logo %}{{ instance.department_logo.url }}{% endif %}"
+    data-dept-url="{{ instance.department_website }}">
     <h1 class="title-large" style="margin-bottom: 20px;">{{ instance.title }}</h1>
 
     {% if instance.description %}

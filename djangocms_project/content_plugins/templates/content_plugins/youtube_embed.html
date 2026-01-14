@@ -1,6 +1,8 @@
 {% load sekizai_tags %}
 <div class="slide slide-video cms-plugin-slide" data-slide-type="youtube_embed"
-    data-youtube-id="{{ instance.youtube_id }}">
+    data-youtube-id="{{ instance.youtube_id }}" data-dept-title="{{ instance.department_title }}"
+    data-dept-logo="{% if instance.department_logo %}{{ instance.department_logo.url }}{% endif %}"
+    data-dept-url="{{ instance.department_website }}">
     <!-- Video is dynamically loaded into #slide-video-shared when active -->
     <h2 style="font-size: 2rem; margin-bottom: 20px;">{{ instance.video_title }}</h2>
     <div style="font-size: 1.2rem; opacity: 0.7;">(Video will play automatically)</div>

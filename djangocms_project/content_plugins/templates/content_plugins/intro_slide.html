@@ -8,9 +8,15 @@
 
 {% if instance.background_image %}
 <div class="slide slide-intro cms-plugin-slide" data-slide-type="intro"
-    style="background-image: url('{{ instance.background_image.url }}');">
+    style="background-image: url('{{ instance.background_image.url }}');"
+    data-dept-title="{{ instance.department_title }}"
+    data-dept-logo="{% if instance.department_logo %}{{ instance.department_logo.url }}{% endif %}"
+    data-dept-url="{{ instance.department_website }}">
     {% else %}
-    <div class="slide slide-intro cms-plugin-slide" data-slide-type="intro">
+    <div class="slide slide-intro cms-plugin-slide" data-slide-type="intro"
+        data-dept-title="{{ instance.department_title }}"
+        data-dept-logo="{% if instance.department_logo %}{{ instance.department_logo.url }}{% endif %}"
+        data-dept-url="{{ instance.department_website }}">
         {% endif %}
         <div class="slide-content">
             <h1 class="title-large">{{ instance.headline }}</h1>

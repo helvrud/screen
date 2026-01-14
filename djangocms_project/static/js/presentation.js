@@ -65,6 +65,55 @@
         // Bring current to front (z-index)
         gsap.set(currentSlideElement, { zIndex: 10 });
 
+        // Update Global Side Stripe
+        const deptTitle = currentSlideElement.dataset.deptTitle || "";
+        const deptLogo = currentSlideElement.dataset.deptLogo || "";
+        const globalTitle = document.getElementById('global-side-title');
+        const globalLogo = document.getElementById('global-side-logo');
+
+        if (globalTitle) {
+            if (globalTitle.textContent !== deptTitle) {
+                gsap.to(globalTitle, {
+                    opacity: 0, duration: 0.3, onComplete: () => {
+                        globalTitle.textContent = deptTitle;
+                        gsap.to(globalTitle, { opacity: 0.7, duration: 0.3 });
+                    }
+                });
+            }
+        }
+
+        if (globalLogo) {
+            if (deptLogo) {
+                globalLogo.src = deptLogo;
+                globalLogo.style.display = 'block';
+            } else {
+                globalLogo.style.display = 'none';
+            }
+        }
+
+        // Update Global Side QR
+        const deptUrl = currentSlideElement.dataset.deptUrl || "";
+        const globalQRContainer = document.getElementById('global-side-qr');
+
+        if (globalQRContainer && deptUrl) {
+            if (!window.globalQRCode) {
+                window.globalQRCode = new QRCode(globalQRContainer, {
+                    text: deptUrl,
+                    width: 70,
+                    height: 70,
+                    colorDark: "#000000",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+            } else {
+                window.globalQRCode.clear();
+                window.globalQRCode.makeCode(deptUrl);
+            }
+            globalQRContainer.style.display = 'block';
+        } else if (globalQRContainer) {
+            globalQRContainer.style.display = 'none';
+        }
+
         // Dispatch to handler
         if (window.SlideHandlers && window.SlideHandlers[slideType]) {
             console.log(`Dispatching to handler: SlideHandlers.${slideType}`);
