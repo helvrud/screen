@@ -15,7 +15,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-CHANGE-THIS-IN-PRODUC
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1,owain.natur.cuni.cz,www.owain.natur.cuni.cz').split(',')
 
 # CSRF Trusted Origins for DjangoCMS and Docker
 CSRF_TRUSTED_ORIGINS = [
@@ -146,6 +146,9 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
+
+FORCE_SCRIPT_NAME = '/screen'
+
 
 # Media files
 MEDIA_URL = '/media/'
