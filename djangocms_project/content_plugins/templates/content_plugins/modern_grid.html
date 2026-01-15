@@ -13,18 +13,14 @@
         {% endfor %}
     </div>
 
-    <!-- The actual floating images that will animate -->
-    <div class="modern-animations-layer">
-        {% for item in instance.items.all %}
-        {% thumbnail item.image 2000x2000 upscale as thumb %}
-        <div class="modern-item-group" id="modern-group-{{ instance.id }}-{{ forloop.index0 }}"
-            style="visibility: hidden;">
-            <img src="{% if thumb %}{{ thumb.url }}{% else %}{{ item.image.url }}{% endif %}" class="modern-photo"
-                alt="{{ item.subtitle }}" onerror="console.error('Modern Grid: Image failed to load', this.src)">
-            <div class="name-label">{{ item.subtitle }}</div>
-        </div>
-        {% endfor %}
-    </div>
+    <!-- Images and labels added directly to slide (no wrapper) -->
+    {% for item in instance.items.all %}
+    {% thumbnail item.image 2000x2000 upscale as thumb %}
+    <img src="{% if thumb %}{{ thumb.url }}{% else %}{{ item.image.url }}{% endif %}" class="modern-photo"
+        id="modern-photo-{{ instance.id }}-{{ forloop.index0 }}" alt="{{ item.subtitle }}"
+        onerror="console.error('Modern Grid: Image failed to load', this.src)">
+    <div class="name-label" id="modern-label-{{ instance.id }}-{{ forloop.index0 }}">{{ item.subtitle }}</div>
+    {% endfor %}
 </div>
 
 {% addtoblock "js" %}
@@ -33,23 +29,15 @@
         window.SlideHandlers.modern_grid = function (element, completeCallback) {
             console.log("Modern Grid handler: started execution for element", element);
 
-            const timeline = gsap.timeline({
-                onComplete: () => {
-                    console.log("Modern Grid timeline: completed");
-                    completeCallback();
-                },
-                onUpdate: () => {
-                    // Periodic log to show it's running
-                    if (Math.random() < 0.01) console.log("Modern Grid timeline: animating...");
-                }
-            });
+            const timeline = gsap.timeline({ onComplete: completeCallback });
 
-            const items = element.querySelectorAll('.modern-item-group');
+            const images = element.querySelectorAll('.modern-photo');
+            const labels = element.querySelectorAll('.name-label');
             const slots = element.querySelectorAll('.modern-slot');
 
-            console.log(`Modern Grid handler: Found ${items.length} items and ${slots.length} slots`);
+            console.log(`Modern Grid handler: Found ${images.length} images, ${labels.length} labels, ${slots.length} slots`);
 
-            if (items.length === 0) {
+            if (images.length === 0) {
                 console.warn("Modern Grid handler: No items found, skipping...");
                 gsap.to(element, {
                     opacity: 1, visibility: 'visible', duration: 0.5, onComplete: () => {
@@ -60,105 +48,65 @@
             }
 
             // Force slide visibility
-            gsap.set(element, { visibility: 'visible', opacity: 1, zIndex: 100 });
+            gsap.set(element, { visibility: 'visible', opacity: 1 });
 
-            items.forEach((group, i) => {
-                const img = group.querySelector('.modern-photo');
-                const label = group.querySelector('.name-label');
+            // CRITICAL: Reset all positions and states at start
+            gsap.set(images, {
+                opacity: 0,
+                visibility: 'hidden',
+                top: '50%',
+                left: '50%',
+                xPercent: -50,
+                yPercent: -50,
+                width: '0vh',
+                height: '0vh',
+                scale: 1
+            });
+            gsap.set(labels, { opacity: 0, visibility: 'hidden' });
+
+            images.forEach((img, i) => {
+                const label = labels[i];
                 const slot = slots[i];
 
                 if (!slot) return;
 
-                // Get target slot dimensions
                 const rect = slot.getBoundingClientRect();
-                const start = i * 2.8;
+                const start = i * 2.8; // Slightly faster cadence
 
-                // Default settle size (full slot)
-                let settleW = rect.width;
-                let settleH = rect.height;
-
-                // Adjust settle size to match image aspect ratio if available
-                if (img.naturalWidth && img.naturalHeight) {
-                    const imgRatio = img.naturalWidth / img.naturalHeight;
-                    const slotRatio = rect.width / rect.height;
-
-                    if (imgRatio > slotRatio) {
-                        // Image is wider than slot: fit width, shrink height
-                        settleH = rect.width / imgRatio;
-                    } else {
-                        // Image is taller than slot: fit height, shrink width
-                        settleW = rect.height * imgRatio;
-                    }
-                }
-
-                // Center coordinates
-                const targetX = rect.left + (rect.width / 2);
-                const targetY = rect.top + (rect.height / 2);
-
-                console.log(`Item ${i} settle: w=${settleW.toFixed(0)}, h=${settleH.toFixed(0)}, x=${targetX.toFixed(0)}, y=${targetY.toFixed(0)}`);
-
-                // 1. Initial State
-                gsap.set(group, { visibility: 'hidden', opacity: 0 });
-                gsap.set(img, {
-                    opacity: 0,
-                    visibility: 'hidden',
-                    top: '50%',
-                    left: '50%',
-                    xPercent: -50,
-                    yPercent: -50,
-                    width: 0,
-                    height: 0,
-                    position: 'fixed',
-                    zIndex: 1000 + i
-                });
-
-                // Position label initially under the centered large image
-                gsap.set(label, {
-                    opacity: 0,
-                    visibility: 'hidden',
-                    top: 'calc(50% + 35vh)',
-                    left: '50%',
-                    xPercent: -50,
-                    position: 'fixed',
-                    zIndex: 1100 + i
-                });
-
-                // 2. Animation Sequence
                 timeline
-                    .set(group, { visibility: 'visible', opacity: 1 }, start)
+                    // 1. Blow up from center
                     .set([img, label], { visibility: 'visible' }, start)
-
-                    // Phase 1: Blow up
                     .to(img, {
                         opacity: 1,
-                        width: "60vw",
-                        height: "60vh",
-                        duration: 1.0,
+                        width: "66vw", // 2/3 of screen width
+                        height: "66vh", // 2/3 of screen height
+                        duration: 0.8,
                         ease: "back.out(1.2)"
                     }, start)
-                    .to(label, { opacity: 1, duration: 0.5 }, start + 0.3)
 
-                    // Phase 3: Settle into grid
-                    .to(label, { opacity: 0, duration: 0.4 }, start + 2.0)
+                    // 2. Show Label
+                    .to(label, { opacity: 1, duration: 0.5 }, start + 0.2)
+
+                    // 3. Hide Label
+                    .to(label, { opacity: 0, duration: 0.3 }, start + 1.8)
+
+                    // 4. Move to Grid Slot
                     .to(img, {
-                        top: targetY,
-                        left: targetX,
-                        width: settleW,
-                        height: settleH,
-                        duration: 1.5,
+                        top: rect.top + (rect.height / 2),
+                        left: rect.left + (rect.width / 2),
+                        xPercent: -50,
+                        yPercent: -50,
+                        width: rect.width,
+                        height: rect.height,
+                        duration: 1.2,
                         ease: "power3.inOut"
-                    }, start + 2.0);
+                    }, start + 1.8);
             });
 
-            // Hold final state
-            timeline.to({}, { duration: 4 });
-
-            // Final fade out
-            timeline.to(element, {
-                opacity: 0,
-                duration: 1,
-                onComplete: () => gsap.set(element, { visibility: 'hidden' })
-            });
+            // Hold final state then fade out
+            timeline
+                .to({}, { duration: 4 })
+                .to(element, { opacity: 0, duration: 1 });
 
             return timeline;
         };
