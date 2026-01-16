@@ -3,7 +3,9 @@
 (function () {
     window.currentSlideIndex = 0;
     window.activeTimeline = null;
+    window.lastReloadTime = Date.now();
     let slides = [];
+    let watchdogTimer = null;
 
     function initPresentation() {
         console.log("initPresentation called");
@@ -28,7 +30,26 @@
 
     function playSlide(index) {
         if (index < 0) index = slides.length - 1;
-        if (index >= slides.length) index = 0;
+        if (index >= slides.length) {
+            console.log("Presentation cycle complete. Reloading page for fresh content...");
+            window.location.reload();
+            return;
+        }
+
+        // Periodic Reload Watchdog: If total uptime > 20 minutes, reload at any slide transition
+        const TWENTY_MINUTES = 20 * 60 * 1000;
+        if (Date.now() - window.lastReloadTime > TWENTY_MINUTES) {
+            console.log("Memory Watchdog: Uptime exceeded 20 minutes. Reloading now.");
+            window.location.reload();
+            return;
+        }
+
+        // Slide Watchdog: If a single slide takes > 2 minutes, force next slide (or reload)
+        if (window.watchdogTimer) clearTimeout(window.watchdogTimer);
+        window.watchdogTimer = setTimeout(() => {
+            console.warn("Watchdog: Slide stuck for 2 minutes. Forcing next.");
+            window.nextSlide();
+        }, 120000);
 
         console.log(`playSlide request: ${index} (current: ${window.currentSlideIndex})`);
 
@@ -56,13 +77,18 @@
             window.player.stopVideo();
         }
 
-        // Reset all slides to hidden (except the current one we are about to animate handles itself usually)
+        // Reset all slides to hidden and remove animation flags
+        slides.forEach(s => s.classList.remove('is-animating'));
+        const overlayTitle = document.getElementById('video-dynamic-title');
+        if (overlayTitle) overlayTitle.classList.remove('is-animating');
+
         gsap.set('.cms-plugin-slide', { visibility: 'hidden', opacity: 0, zIndex: 1 });
 
         // Explicitly hide shared video container in case it was left open
         gsap.set('#slide-video-shared', { visibility: 'hidden', opacity: 0, zIndex: 1, pointerEvents: 'none' });
 
-        // Bring current to front (z-index)
+        // Bring current to front and add animation flag for GPU optimization
+        currentSlideElement.classList.add('is-animating');
         gsap.set(currentSlideElement, { zIndex: 10 });
 
         // Update Global Side Stripe

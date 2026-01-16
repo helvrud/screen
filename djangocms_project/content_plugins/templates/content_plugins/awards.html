@@ -1,0 +1,83 @@
+{% load thumbnail sekizai_tags %}
+
+<div class="slide slide-awards cms-plugin-slide" data-slide-type="awards"
+    {% if instance.background_image %}style="background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('{{ instance.background_image.url }}');"{% endif %}
+    data-dept-title="{{ instance.department_title }}"
+    data-dept-logo="{% if instance.department_logo %}{{ instance.department_logo.url }}{% endif %}"
+    data-dept-url="{{ instance.department_website }}">
+
+    <div class="awards-content">
+        {% if instance.title %}<h1 class="title-large">{{ instance.title }}</h1>{% endif %}
+        {% if instance.subtitle %}<p class="subtitle">{{ instance.subtitle }}</p>{% endif %}
+        {{ instance.content|safe }}
+        
+        <div class="awards-grid" id="awards-grid-{{ instance.id }}">
+            {% for award in awards %}
+            <div class="award-card">
+                <div class="award-image-container">
+                    {% thumbnail award.image 600x400 crop upscale as thumb %}
+                    <img src="{{ thumb.url }}" alt="{{ award.title }}">
+                </div>
+                <div class="award-info">
+                    <h3 class="award-title">{{ award.title }}</h3>
+                    <p class="award-recipient">{{ award.recipient }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% addtoblock "js" %}
+<script>
+    (function () {
+        window.SlideHandlers.awards = function (element, completeCallback) {
+            console.log("Awards handler: starting", element);
+            
+            const timeline = gsap.timeline({ onComplete: completeCallback });
+            // Select all direct children of awards-content EXCEPT the grid for the header animation
+            const headerElements = Array.from(element.querySelector('.awards-content').children)
+                                       .filter(el => !el.classList.contains('awards-grid'));
+            const cards = gsap.utils.toArray(element.querySelectorAll('.award-card'));
+
+            // Force visibility
+            gsap.set(element, { visibility: 'visible', opacity: 1, zIndex: 10 });
+
+            // Initial state
+            if (headerElements.length) gsap.set(headerElements, { y: -30, opacity: 0 });
+            gsap.set(cards, { opacity: 0, y: 50, scale: 0.9, filter: "blur(10px)" });
+
+            // Header animation
+            if (headerElements.length) {
+                timeline.to(headerElements, { 
+                    y: 0, 
+                    opacity: 1, 
+                    duration: 1, 
+                    stagger: 0.2,
+                    ease: "power3.out" 
+                });
+            }
+
+            // Cards staggered appearance - matching awards-slide.js slower feel
+            if (cards.length > 0) {
+                timeline.to(cards, {
+                    opacity: 1,
+                    y: 0,
+                    scale: 1,
+                    filter: "blur(0px)",
+                    duration: 2.0,
+                    stagger: 0.8,
+                    ease: "back.out(1.2)"
+                }, "-=0.5");
+            }
+
+            // Hold and fade out
+            timeline
+                .to({}, { duration: 6 })
+                .to(element, { opacity: 0, duration: 1 });
+
+            return timeline;
+        };
+    })();
+</script>
+{% endaddtoblock %}

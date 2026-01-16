@@ -1,6 +1,8 @@
 {% load sekizai_tags %}
 <div class="slide slide-video cms-plugin-slide" data-slide-type="youtube_embed"
-    data-youtube-id="{{ instance.youtube_id }}" data-dept-title="{{ instance.department_title }}"
+    data-youtube-id="{{ instance.youtube_id }}" 
+    data-subtitle="{{ instance.subtitle }}"
+    data-dept-title="{{ instance.department_title }}"
     data-dept-logo="{% if instance.department_logo %}{{ instance.department_logo.url }}{% endif %}"
     data-dept-url="{{ instance.department_website }}">
     <!-- Video is dynamically loaded into #slide-video-shared when active -->
@@ -13,14 +15,33 @@
     (function () {
         window.SlideHandlers.youtube_embed = function (element, completeCallback) {
             const videoId = element.dataset.youtubeId;
+            const videoSubtitle = element.dataset.subtitle;
             const sharedContainer = document.getElementById('slide-video-shared');
+            const overlayTitle = document.getElementById('video-dynamic-title');
 
             // Move focus to shared container
             gsap.set(sharedContainer, { visibility: "visible", opacity: 1, pointerEvents: "auto" });
+            sharedContainer.classList.add('slide-video-active');
             gsap.set('#player', { opacity: 0 });
+
+            // Set and show overlay title ONLY if text exists
+            if (overlayTitle) {
+                if (videoSubtitle && videoSubtitle.trim() !== "") {
+                    overlayTitle.textContent = videoSubtitle;
+                    overlayTitle.classList.add('is-animating');
+                    gsap.set(overlayTitle, { visibility: 'visible', opacity: 0, y: 10 });
+                    gsap.to(overlayTitle, { opacity: 1, y: 0, duration: 1, delay: 1.5, ease: "power2.out" });
+                } else {
+                    gsap.set(overlayTitle, { visibility: 'hidden', opacity: 0 });
+                }
+            }
 
             // Helper to bridge the end of video to callback
             window.currentVideoCompleteCallback = () => {
+                sharedContainer.classList.remove('slide-video-active');
+                if (overlayTitle) {
+                     gsap.to(overlayTitle, { opacity: 0, duration: 0.5 });
+                }
                 gsap.to(sharedContainer, {
                     opacity: 0, duration: 1, onComplete: () => {
                         gsap.set(sharedContainer, { visibility: 'hidden', pointerEvents: "none" });
@@ -34,12 +55,11 @@
                     videoId: videoId,
                     suggestedQuality: 'highres'
                 });
-                window.player.setPlaybackQuality('highres');
+                window.player.setPlaybackQuality('medium');
                 window.player.mute();
                 window.player.playVideo();
             } else {
                 console.error("YouTube Player not initialized");
-                // Retry once or skip
                 setTimeout(completeCallback, 2000);
             }
 

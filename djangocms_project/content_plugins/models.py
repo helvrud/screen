@@ -7,6 +7,7 @@ from django.db import models
 from cms.models import CMSPlugin
 from filer.fields.image import FilerImageField
 from filer.fields.folder import FilerFolderField
+from djangocms_text_ckeditor.fields import HTMLField
 
 
 class BaseSlidePlugin(CMSPlugin):
@@ -15,7 +16,7 @@ class BaseSlidePlugin(CMSPlugin):
     """
     department_title = models.CharField(
         max_length=200,
-        default="Department of Physical and Macromolecular Chemistry",
+        default="Katedra fyzikální a makromolekulární chemie",
         verbose_name="Department Title",
         help_text="Identity text displayed at the top of the slide"
     )
@@ -28,7 +29,7 @@ class BaseSlidePlugin(CMSPlugin):
     )
     department_website = models.URLField(
         max_length=500,
-        default="https://www.natur.cuni.cz/chemistry/fyzchem",
+        default="https://physchem.cz",
         verbose_name="Department Website",
         help_text="URL for the QR code"
     )
@@ -264,6 +265,12 @@ class YouTubeEmbedPlugin(BaseSlidePlugin):
         verbose_name="YouTube Video ID",
         help_text="Enter the YouTube video ID (e.g., 'dQw4w9WgXcQ' from youtube.com/watch?v=dQw4w9WgXcQ)"
     )
+    subtitle = models.CharField(
+        max_length=500,
+        blank=True,
+        verbose_name="Overlay Subtitle",
+        help_text="Text to display as an overlay during video playback (optional)"
+    )
 
     def __str__(self):
         return f"Video: {self.video_title}"
@@ -323,3 +330,144 @@ class ModernSlideItem(models.Model):
 
     def __str__(self):
         return self.subtitle or f"Item {self.pk}"
+
+class ScientificGroupPlugin(BaseSlidePlugin):
+    """
+    Plugin for showing a scientific group: title, members row, and research grid.
+    """
+    title = models.CharField(
+        max_length=200,
+        verbose_name="Slide Title",
+        default="Scientific Group"
+    )
+    background_image = FilerImageField(
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="scientific_group_backgrounds",
+        verbose_name="Background Image"
+    )
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = "Scientific Group Slide"
+        verbose_name_plural = "Scientific Group Slides"
+
+
+class GroupMember(models.Model):
+    """
+    Individual person in the group row
+    """
+    plugin = models.ForeignKey(
+        ScientificGroupPlugin,
+        on_delete=models.CASCADE,
+        related_name="members"
+    )
+    name = models.CharField(max_length=200, verbose_name="Name")
+    photo = FilerImageField(
+        on_delete=models.CASCADE,
+        related_name="scientific_group_member_photos",
+        verbose_name="Photo"
+    )
+    order = models.PositiveIntegerField(default=0, verbose_name="Order")
+
+    class Meta:
+        ordering = ['order']
+        verbose_name = "Group Member"
+        verbose_name_plural = "Group Members"
+
+    def __str__(self):
+        return self.name
+
+
+class ResearchItem(models.Model):
+    """
+    Individual research project in the grid
+    """
+    plugin = models.ForeignKey(
+        ScientificGroupPlugin,
+        on_delete=models.CASCADE,
+        related_name="research_items"
+    )
+    title = models.CharField(max_length=200, verbose_name="Research Title")
+    image = FilerImageField(
+        on_delete=models.CASCADE,
+        related_name="scientific_group_research_images",
+        verbose_name="Image"
+    )
+    description = models.TextField(verbose_name="Description", blank=True)
+    order = models.PositiveIntegerField(default=0, verbose_name="Order")
+
+    class Meta:
+        ordering = ['order']
+        verbose_name = "Research Item"
+        verbose_name_plural = "Research Items"
+
+    def __str__(self):
+        return self.title
+
+class AwardsPlugin(BaseSlidePlugin):
+    """
+    Plugin for showing a grid of awards with titles and recipients
+    """
+    title = models.CharField(
+        max_length=200,
+        verbose_name="Slide Title",
+        default="Our Awards",
+        blank=True
+    )
+    subtitle = models.CharField(
+        max_length=500,
+        verbose_name="Subtitle",
+        blank=True,
+        help_text="Supporting text below the main title"
+    )
+    content = HTMLField(
+        verbose_name="Content",
+        default="",
+        blank=True,
+        help_text="Edit description and subtitles here"
+    )
+    background_image = FilerImageField(
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="awards_slide_backgrounds",
+        verbose_name="Background Image"
+    )
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = "Awards Slide"
+        verbose_name_plural = "Awards Slides"
+
+
+class AwardItem(models.Model):
+    """
+    Individual award item
+    """
+    plugin = models.ForeignKey(
+        AwardsPlugin,
+        on_delete=models.CASCADE,
+        related_name="awards"
+    )
+    image = FilerImageField(
+        on_delete=models.CASCADE,
+        related_name="award_images",
+        verbose_name="Award Image"
+    )
+    title = models.CharField(max_length=200, verbose_name="Award Title")
+    recipient = models.CharField(max_length=200, verbose_name="Recipient")
+    order = models.PositiveIntegerField(default=0, verbose_name="Order")
+
+    class Meta:
+        ordering = ['order']
+        verbose_name = "Award"
+        verbose_name_plural = "Awards"
+
+    def __str__(self):
+        return f"{self.title} - {self.recipient}"
