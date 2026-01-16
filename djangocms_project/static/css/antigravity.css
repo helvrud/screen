@@ -43,7 +43,7 @@ body.kiosk-mode {
     bottom: 0;
     width: 120px;
     background: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(2px);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -610,10 +610,12 @@ body:hover .nav-arrow {
 }
 
 .award-card {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(25, 25, 25, 0.9);
+    /* More solid background */
+    backdrop-filter: blur(2px);
+    /* Much lighter blur */
+    -webkit-backdrop-filter: blur(2px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 12px;
     padding: 10px;
     display: flex;
@@ -675,8 +677,8 @@ body:hover .nav-arrow {
             rgba(0, 0, 0, 0.9) 0%,
             rgba(0, 0, 0, 0.6) 40%,
             rgba(0, 0, 0, 0) 100%);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
     padding: 6vh 20px 4vh;
     /* Large padding at bottom to lift text while keeping gradient contact */
     border-radius: 0;
