@@ -368,13 +368,37 @@ body:hover .nav-arrow {
 
 
 /* YouTube Embed */
+/* YouTube Embed */
 .video-container {
     position: relative;
     width: 80vw;
+    /* Basic 16:9 fallback for browsers that don't support aspect-ratio */
+    height: 45vw;
+    /* 80 * 9 / 16 = 45 */
     aspect-ratio: 16/9;
     background: #000;
     z-index: 5;
     margin: auto;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+}
+
+#player {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+}
+
+/* Shared video slide specifics */
+.slide-video-shared-container {
+    padding: 0 !important;
+    padding-left: 0 !important;
+    justify-content: center !important;
+    align-items: center !important;
 }
 
 #slide-video-shared::before {
