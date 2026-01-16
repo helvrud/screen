@@ -568,11 +568,9 @@ body:hover .nav-arrow {
 .research-title {
     font-size: 1rem;
     font-weight: 700;
-    margin-bottom: 3px;
+    margin-bottom: 5px;
     color: var(--accent-gold);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    line-height: 1.2;
 }
 
 .research-text {
