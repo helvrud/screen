@@ -13,7 +13,8 @@
     <div class="masonry-grid" id="masonry-grid-{{ instance.id }}">
         {% for item in images %}
         <div class="masonry-item">
-            <img src="{{ item.image.url }}" alt="{{ item.caption }}" class="gallery-photo">
+            {% thumbnail item.image 800x0 upscale as thumb %}
+            <img src="{{ thumb.url }}" alt="{{ item.caption }}" class="gallery-photo" loading="lazy">
             {% if item.caption %}
             <div class="gallery-caption">{{ item.caption }}</div>
             {% endif %}
@@ -43,6 +44,9 @@
 
             // Stagger fade in items
             const items = slide.querySelectorAll('.masonry-item');
+            
+            // Optimization for TV: remove high-res requirements
+            items.forEach(item => item.classList.add('is-animating'));
 
             // Ensure they are visible to start (in case of CSS opacity issues) but 0 opacity for fade
             gsap.set(items, { opacity: 0, y: 50, visibility: 'visible' });
@@ -57,7 +61,15 @@
             // Hold then fade out
             timeline
                 .to({}, { duration: 5 })
-                .to(items, { opacity: 0, y: -20, duration: 0.5, stagger: 0.05 }) // Nice exit
+                .to(items, { 
+                    opacity: 0, 
+                    y: -20, 
+                    duration: 0.5, 
+                    stagger: 0.05,
+                    onComplete: () => {
+                        items.forEach(item => item.classList.remove('is-animating'));
+                    }
+                }) // Nice exit
                 .to(slide, { opacity: 0, duration: 1 });
 
             return timeline;
