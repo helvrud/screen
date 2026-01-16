@@ -33,7 +33,7 @@
             {% for item in research_items %}
             <div class="research-card">
                 <div class="research-image-container">
-                    {% thumbnail item.image 600x400 crop upscale as thumb %}
+                    {% thumbnail item.image 900x600 crop upscale as thumb %}
                     <img src="{% if thumb %}{{ thumb.url }}{% else %}{{ item.image.url }}{% endif %}"
                         alt="{{ item.title }}" class="research-image" onerror="this.style.display='none'">
                 </div>
@@ -79,13 +79,13 @@
 
             if (members.length) {
                 timeline.to(members, {
-                    opacity: 1, y: 0, duration: 0.6, stagger: 0.15, ease: "back.out(1.2)"
-                }, "-=0.4");
+                    opacity: 1, y: 0, duration: 1.2, stagger: 0.4, ease: "power2.out"
+                }, "-=0.2");
             }
 
             if (researchItems.length) {
                 timeline.to(researchItems, {
-                    opacity: 1, y: 0, duration: 0.8, stagger: 0.2, ease: "power2.out"
+                    opacity: 1, y: 0, duration: 1.0, stagger: 0.3, ease: "power2.out"
                 }, "-=0.4");
             }
 
