@@ -540,14 +540,15 @@ body:hover .nav-arrow {
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    max-height: 28vh;
-    /* Ensuring the row fits well within 1/3 of the screen */
+    /* Removed max-height to let aspect-ratio drive image size */
 }
 
 .research-image-container {
     width: 100%;
     aspect-ratio: 3 / 2;
     overflow: hidden;
+    flex-shrink: 0;
+    /* Important: prevents text from squeezing the image */
 }
 
 .research-image,
@@ -560,25 +561,28 @@ body:hover .nav-arrow {
 .research-info {
     padding: 8px 12px;
     text-align: left;
+    overflow: hidden;
 }
 
 .research-title {
     font-size: 1rem;
-    /* Smaller title to save space */
     font-weight: 700;
     margin-bottom: 3px;
     color: var(--accent-gold);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .research-text {
     font-size: 0.85rem;
-    /* Smaller text to fit within the constrained height */
     line-height: 1.3;
     opacity: 0.9;
     margin: 0;
     display: -webkit-box;
-    -webkit-line-clamp: 3;
-    line-clamp: 3;
+    -webkit-line-clamp: 2;
+    /* Dropped from 3 to 2 to prioritize image space */
+    line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
