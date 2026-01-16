@@ -1,6 +1,7 @@
 {% load thumbnail sekizai_tags %}
 
-<div class="slide slide-scientific cms-plugin-slide" data-slide-type="scientific_group"
+<div class="slide slide-scientific cms-plugin-slide" data-slide-type="scientific_group" 
+    {% if instance.background_image %}style="background-image: url('{{ instance.background_image.url }}');" {% endif %}
     data-dept-title="{{ instance.department_title }}"
     data-dept-logo="{% if instance.department_logo %}{{ instance.department_logo.url }}{% endif %}"
     data-dept-url="{{ instance.department_website }}">

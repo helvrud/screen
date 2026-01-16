@@ -30,7 +30,8 @@ body.kiosk-mode {
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 0;
+    z-index: 1;
+    /* Above body background, below slides */
     pointer-events: none;
 }
 
@@ -59,7 +60,7 @@ body.kiosk-mode {
 .side-title {
     writing-mode: vertical-rl;
     transform: rotate(180deg);
-    font-size: 1.2rem;
+    font-size: 1.5rem;
     text-transform: uppercase;
     letter-spacing: 4px;
     color: white;
@@ -67,7 +68,7 @@ body.kiosk-mode {
     opacity: 0.9;
     white-space: normal;
     max-height: 50vh;
-    text-align: center;
+    text-align: left;
     margin-bottom: 20px;
     line-height: 1.4;
 }
@@ -114,9 +115,10 @@ body.kiosk-mode {
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
-    background-color: var(--bg-dark);
-    z-index: 1;
-    isolation: isolate;
+    background-color: transparent;
+    z-index: 10;
+    isolation: auto;
+    /* Allow children to interact with global z-index if possible (though limited by parent z-index) */
     will-change: opacity, visibility;
     box-sizing: border-box;
 }
@@ -148,7 +150,7 @@ body.kiosk-mode {
 /* --- Content Wrapper --- */
 .slide-content {
     position: relative;
-    z-index: 10;
+    z-index: 20;
     width: 90%;
     display: flex;
     flex-direction: column;
@@ -471,7 +473,8 @@ body:hover .nav-arrow {
 }
 
 .scientific-content {
-    width: 50vw; /* Reduced from 60vw to make items smaller as requested */
+    width: 50vw;
+    /* Reduced from 60vw to make items smaller as requested */
     margin: 0 auto;
     z-index: 10;
     display: flex;
@@ -491,7 +494,8 @@ body:hover .nav-arrow {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 14vh; /* Slightly smaller than before to balance the narrower grid */
+    width: 14vh;
+    /* Slightly smaller than before to balance the narrower grid */
 }
 
 .member-photo-container {
@@ -501,7 +505,7 @@ body:hover .nav-arrow {
     overflow: hidden;
     margin-bottom: 8px;
     border: 2px solid var(--glass-border);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
 }
 
 .member-photo {
@@ -531,7 +535,8 @@ body:hover .nav-arrow {
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    max-height: 28vh; /* Ensuring the row fits well within 1/3 of the screen */
+    max-height: 28vh;
+    /* Ensuring the row fits well within 1/3 of the screen */
 }
 
 .research-image-container {
@@ -552,14 +557,16 @@ body:hover .nav-arrow {
 }
 
 .research-title {
-    font-size: 1rem; /* Smaller title to save space */
+    font-size: 1rem;
+    /* Smaller title to save space */
     font-weight: 700;
     margin-bottom: 3px;
     color: var(--accent-gold);
 }
 
 .research-text {
-    font-size: 0.85rem; /* Smaller text to fit within the constrained height */
+    font-size: 0.85rem;
+    /* Smaller text to fit within the constrained height */
     line-height: 1.3;
     opacity: 0.9;
     margin: 0;
@@ -568,4 +575,85 @@ body:hover .nav-arrow {
     line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
+}
+
+/* Awards Slide */
+.slide-awards {
+    justify-content: center;
+    /* Put everything in the middle vertically */
+    padding-top: 2vh;
+    padding-bottom: 2vh;
+}
+
+.awards-content {
+    width: 70vw;
+    /* Slightly wider to give cards breathing room while centered */
+    margin: 0 auto;
+    z-index: 10;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.awards-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2vh 30px;
+    width: 100%;
+    margin-top: 2.5vh;
+    perspective: 1000px;
+}
+
+.award-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    box-sizing: border-box;
+    /* No max-height here, let flex-center handle it */
+}
+
+.award-image-container {
+    width: 100%;
+    aspect-ratio: 3/2;
+    /* Strict 3:2 ratio */
+    overflow: hidden;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.award-image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+}
+
+.award-info {
+    text-align: center;
+    padding: 0 5px;
+}
+
+.award-title {
+    font-size: 1.15rem;
+    color: var(--accent-gold);
+    margin: 5px 0 3px 0;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.award-recipient {
+    font-size: 1rem;
+    color: white;
+    font-weight: 400;
+    opacity: 0.95;
+    margin-bottom: 5px;
 }

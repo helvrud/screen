@@ -15,12 +15,14 @@ from .models import (
     YouTubeEmbedPlugin,
     ModernSlidePlugin,
     ScientificGroupPlugin,
+    AwardsPlugin,
     Person,
     PeopleGridImage,
     GalleryImage,
     ModernSlideItem,
     GroupMember,
-    ResearchItem
+    ResearchItem,
+    AwardItem
 )
 
 from django.contrib import admin
@@ -47,6 +49,10 @@ class GroupMemberInline(admin.TabularInline):
 
 class ResearchItemInline(admin.StackedInline):
     model = ResearchItem
+    extra = 0
+
+class AwardItemInline(admin.TabularInline):
+    model = AwardItem
     extra = 0
 
 @plugin_pool.register_plugin
@@ -188,4 +194,18 @@ class ScientificGroupCMSPlugin(CMSPluginBase):
         context['instance'] = instance
         context['members'] = instance.members.all()
         context['research_items'] = instance.research_items.all()
+        return context
+@plugin_pool.register_plugin
+class AwardsCMSPlugin(CMSPluginBase):
+    model = AwardsPlugin
+    name = _("Awards Slide")
+    render_template = "content_plugins/awards.html"
+    cache = True
+    module = _("Presentation Plugins")
+    inlines = [AwardItemInline]
+
+    def render(self, context, instance, placeholder):
+        context = super().render(context, instance, placeholder)
+        context['instance'] = instance
+        context['awards'] = instance.awards.all()
         return context

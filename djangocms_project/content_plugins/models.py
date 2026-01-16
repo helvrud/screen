@@ -7,6 +7,7 @@ from django.db import models
 from cms.models import CMSPlugin
 from filer.fields.image import FilerImageField
 from filer.fields.folder import FilerFolderField
+from djangocms_text_ckeditor.fields import HTMLField
 
 
 class BaseSlidePlugin(CMSPlugin):
@@ -15,7 +16,7 @@ class BaseSlidePlugin(CMSPlugin):
     """
     department_title = models.CharField(
         max_length=200,
-        default="Department of Physical and Macromolecular Chemistry",
+        default="Katedra fyzikální a makromolekulární chemie",
         verbose_name="Department Title",
         help_text="Identity text displayed at the top of the slide"
     )
@@ -28,7 +29,7 @@ class BaseSlidePlugin(CMSPlugin):
     )
     department_website = models.URLField(
         max_length=500,
-        default="https://www.natur.cuni.cz/chemistry/fyzchem",
+        default="https://physchem.cz",
         verbose_name="Department Website",
         help_text="URL for the QR code"
     )
@@ -333,6 +334,13 @@ class ScientificGroupPlugin(BaseSlidePlugin):
         verbose_name="Slide Title",
         default="Scientific Group"
     )
+    background_image = FilerImageField(
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="scientific_group_backgrounds",
+        verbose_name="Background Image"
+    )
 
     def __str__(self):
         return self.title
@@ -393,3 +401,67 @@ class ResearchItem(models.Model):
 
     def __str__(self):
         return self.title
+
+class AwardsPlugin(BaseSlidePlugin):
+    """
+    Plugin for showing a grid of awards with titles and recipients
+    """
+    title = models.CharField(
+        max_length=200,
+        verbose_name="Slide Title",
+        default="Our Awards",
+        blank=True
+    )
+    subtitle = models.CharField(
+        max_length=500,
+        verbose_name="Subtitle",
+        blank=True,
+        help_text="Supporting text below the main title"
+    )
+    content = HTMLField(
+        verbose_name="Content",
+        default="",
+        blank=True,
+        help_text="Edit description and subtitles here"
+    )
+    background_image = FilerImageField(
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="awards_slide_backgrounds",
+        verbose_name="Background Image"
+    )
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = "Awards Slide"
+        verbose_name_plural = "Awards Slides"
+
+
+class AwardItem(models.Model):
+    """
+    Individual award item
+    """
+    plugin = models.ForeignKey(
+        AwardsPlugin,
+        on_delete=models.CASCADE,
+        related_name="awards"
+    )
+    image = FilerImageField(
+        on_delete=models.CASCADE,
+        related_name="award_images",
+        verbose_name="Award Image"
+    )
+    title = models.CharField(max_length=200, verbose_name="Award Title")
+    recipient = models.CharField(max_length=200, verbose_name="Recipient")
+    order = models.PositiveIntegerField(default=0, verbose_name="Order")
+
+    class Meta:
+        ordering = ['order']
+        verbose_name = "Award"
+        verbose_name_plural = "Awards"
+
+    def __str__(self):
+        return f"{self.title} - {self.recipient}"

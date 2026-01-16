@@ -62,7 +62,7 @@
         // Explicitly hide shared video container in case it was left open
         gsap.set('#slide-video-shared', { visibility: 'hidden', opacity: 0, zIndex: 1, pointerEvents: 'none' });
 
-        // Bring current to front (z-index)
+        // Bring current to front (on top of particles at z-index 1)
         gsap.set(currentSlideElement, { zIndex: 10 });
 
         // Update Global Side Stripe
