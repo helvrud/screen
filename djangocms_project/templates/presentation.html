@@ -23,7 +23,7 @@
             window.player = new YT.Player('player', {
                 height: '100%',
                 width: '100%',
-                playerVars: { 'autoplay': 1, 'controls': 0, 'rel': 0, 'mute': 1, 'enablejsapi': 1, 'modestbranding': 1 },
+                playerVars: { 'autoplay': 1, 'controls': 0, 'rel': 0, 'mute': 1, 'enablejsapi': 1, 'modestbranding': 1, 'playsinline': 1 },
                 events: {
                     'onStateChange': (event) => {
                         if (event.data === YT.PlayerState.ENDED) {
@@ -59,9 +59,11 @@
     </main>
 
     <!-- Video Player Container (Shared) -->
-    <div id="slide-video-shared" class="slide"
-        style="padding:0; justify-content:center; visibility: hidden; opacity: 0; pointer-events: none;">
-        <div id="player"></div>
+    <div id="slide-video-shared" class="slide slide-video-shared-container"
+        style="padding:0; justify-content:center; align-items:center; visibility: hidden; opacity: 0; pointer-events: none;">
+        <div class="video-container">
+            <div id="player"></div>
+        </div>
         <div id="video-dynamic-title" class="video-overlay-title"></div>
     </div>
 
