@@ -14,10 +14,13 @@ from .models import (
     PeopleGridPlugin,
     YouTubeEmbedPlugin,
     ModernSlidePlugin,
+    ScientificGroupPlugin,
     Person,
     PeopleGridImage,
     GalleryImage,
-    ModernSlideItem
+    ModernSlideItem,
+    GroupMember,
+    ResearchItem
 )
 
 from django.contrib import admin
@@ -36,6 +39,14 @@ class GalleryImageInline(admin.StackedInline):
 
 class ModernSlideItemInline(admin.StackedInline):
     model = ModernSlideItem
+    extra = 0
+
+class GroupMemberInline(admin.TabularInline):
+    model = GroupMember
+    extra = 0
+
+class ResearchItemInline(admin.StackedInline):
+    model = ResearchItem
     extra = 0
 
 @plugin_pool.register_plugin
@@ -161,4 +172,20 @@ class ModernSlideCMSPlugin(CMSPluginBase):
         context = super().render(context, instance, placeholder)
         context['instance'] = instance
         # Items are already available via instance.items
+        return context
+
+@plugin_pool.register_plugin
+class ScientificGroupCMSPlugin(CMSPluginBase):
+    model = ScientificGroupPlugin
+    name = _("Scientific Group Slide")
+    render_template = "content_plugins/scientific_group.html"
+    cache = True
+    module = _("Presentation Plugins")
+    inlines = [GroupMemberInline, ResearchItemInline]
+
+    def render(self, context, instance, placeholder):
+        context = super().render(context, instance, placeholder)
+        context['instance'] = instance
+        context['members'] = instance.members.all()
+        context['research_items'] = instance.research_items.all()
         return context

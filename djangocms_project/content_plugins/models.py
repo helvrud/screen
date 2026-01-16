@@ -323,3 +323,73 @@ class ModernSlideItem(models.Model):
 
     def __str__(self):
         return self.subtitle or f"Item {self.pk}"
+
+class ScientificGroupPlugin(BaseSlidePlugin):
+    """
+    Plugin for showing a scientific group: title, members row, and research grid.
+    """
+    title = models.CharField(
+        max_length=200,
+        verbose_name="Slide Title",
+        default="Scientific Group"
+    )
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = "Scientific Group Slide"
+        verbose_name_plural = "Scientific Group Slides"
+
+
+class GroupMember(models.Model):
+    """
+    Individual person in the group row
+    """
+    plugin = models.ForeignKey(
+        ScientificGroupPlugin,
+        on_delete=models.CASCADE,
+        related_name="members"
+    )
+    name = models.CharField(max_length=200, verbose_name="Name")
+    photo = FilerImageField(
+        on_delete=models.CASCADE,
+        related_name="scientific_group_member_photos",
+        verbose_name="Photo"
+    )
+    order = models.PositiveIntegerField(default=0, verbose_name="Order")
+
+    class Meta:
+        ordering = ['order']
+        verbose_name = "Group Member"
+        verbose_name_plural = "Group Members"
+
+    def __str__(self):
+        return self.name
+
+
+class ResearchItem(models.Model):
+    """
+    Individual research project in the grid
+    """
+    plugin = models.ForeignKey(
+        ScientificGroupPlugin,
+        on_delete=models.CASCADE,
+        related_name="research_items"
+    )
+    title = models.CharField(max_length=200, verbose_name="Research Title")
+    image = FilerImageField(
+        on_delete=models.CASCADE,
+        related_name="scientific_group_research_images",
+        verbose_name="Image"
+    )
+    description = models.TextField(verbose_name="Description", blank=True)
+    order = models.PositiveIntegerField(default=0, verbose_name="Order")
+
+    class Meta:
+        ordering = ['order']
+        verbose_name = "Research Item"
+        verbose_name_plural = "Research Items"
+
+    def __str__(self):
+        return self.title

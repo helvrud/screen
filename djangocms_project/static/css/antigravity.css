@@ -15,7 +15,7 @@ html {
     overflow: hidden;
     width: 100vw;
     height: 100vh;
-    font-family: 'Comfortaa', cursive;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
     color: white;
 }
 
@@ -65,8 +65,11 @@ body.kiosk-mode {
     color: white;
     font-weight: 700;
     opacity: 0.9;
-    white-space: nowrap;
+    white-space: normal;
+    max-height: 50vh;
+    text-align: center;
     margin-bottom: 20px;
+    line-height: 1.4;
 }
 
 .side-logo {
@@ -434,8 +437,8 @@ body:hover .nav-arrow {
 
 .slide-modern {
     justify-content: flex-start;
-    padding-top: 16vh;
-    padding-bottom: 3vh;
+    padding-top: 6vh;
+    /* padding-bottom: 3vh; */
 }
 
 /* Admin/Edit Mode Adjustments */
@@ -458,4 +461,105 @@ body:hover .nav-arrow {
 .cms-structure-mode .nav-arrow,
 .cms-edit-mode .nav-arrow {
     display: none !important;
+}
+/* Scientific Group Slide */
+.slide-scientific {
+    justify-content: flex-start;
+    padding-top: 4vh;
+}
+
+.scientific-content {
+    width: 90%;
+    margin: 0 auto;
+    z-index: 10;
+}
+
+.members-row {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 3vh;
+    margin-bottom: 5vh;
+}
+
+.member-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 15vh;
+}
+
+.member-photo-container {
+    width: 100%;
+    aspect-ratio: 1/1;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 10px;
+    border: 2px solid var(--glass-border);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+}
+
+.member-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.member-name {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: white;
+    text-align: center;
+}
+
+.research-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    width: 100%;
+}
+
+.research-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease;
+}
+
+.research-image-container {
+    width: 100%;
+    height: 18vh;
+    overflow: hidden;
+}
+
+.research-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.research-info {
+    padding: 15px;
+    text-align: left;
+}
+
+.research-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--accent-gold);
+}
+
+.research-text {
+    font-size: 1rem;
+    line-height: 1.4;
+    opacity: 0.9;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
