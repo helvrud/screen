@@ -60,7 +60,7 @@ body.kiosk-mode {
 .side-title {
     writing-mode: vertical-rl;
     transform: rotate(180deg);
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     text-transform: uppercase;
     letter-spacing: 4px;
     color: white;
@@ -687,5 +687,9 @@ body:hover .nav-arrow {
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-    
-}.video-overlay-title.is-animating { will-change: opacity, transform; }
+
+}
+
+.video-overlay-title.is-animating {
+    will-change: opacity, transform;
+}
