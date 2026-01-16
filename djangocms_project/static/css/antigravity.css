@@ -528,13 +528,20 @@ body:hover .nav-arrow {
 }
 
 .research-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 15px;
+    display: flex;
+    /* Switch to flex for easier single-row auto-sizing */
+    justify-content: center;
+    gap: 20px;
     width: 100%;
 }
 
 .research-card {
+    flex: 1;
+    /* All cards take equal width */
+    min-width: 0;
+    /* Allow cards to shrink below content width */
+    max-width: 400px;
+    /* Prevent cards from becoming too wide if there are only 1-2 */
     background: var(--glass-bg);
     border: 1px solid var(--glass-border);
     border-radius: 12px;
