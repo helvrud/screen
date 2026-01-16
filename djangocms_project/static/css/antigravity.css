@@ -119,8 +119,11 @@ body.kiosk-mode {
     z-index: 10;
     isolation: auto;
     /* Allow children to interact with global z-index if possible (though limited by parent z-index) */
-    will-change: opacity, visibility;
     box-sizing: border-box;
+}
+
+.slide.is-animating {
+    will-change: opacity, visibility;
 }
 
 /* FALLBACK: Make at least the first slide visible by default */
@@ -379,10 +382,10 @@ body:hover .nav-arrow {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(3, 1fr);
-    gap: 15px;
-    width: 80vw;
-    height: 65vh;
-    margin: 3vh auto 0;
+    gap: 2vh;
+    width: 135vh;
+    height: 90vh;
+    margin: 1vh auto 0;
     z-index: 10;
 }
 
@@ -400,8 +403,9 @@ body:hover .nav-arrow {
     top: 50%;
     left: 50%;
     object-fit: cover;
-    width: 60vh;
-    height: 40vh;
+    width: 90vh;
+    height: 60vh;
+    aspect-ratio: 3 / 2;
     border-radius: 8px;
     box-shadow: 0 30px 60px rgba(0, 0, 0, 0.9);
     visibility: hidden;
@@ -657,3 +661,31 @@ body:hover .nav-arrow {
     opacity: 0.95;
     margin-bottom: 5px;
 }
+
+/* Video Overlay Subtitle */
+.video-overlay-title {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    width: 100%;
+    text-align: center;
+    /* Soft gradient background from bottom to top */
+    background: linear-gradient(to top,
+            rgba(0, 0, 0, 0.9) 0%,
+            rgba(0, 0, 0, 0.6) 40%,
+            rgba(0, 0, 0, 0) 100%);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 6vh 20px 4vh;
+    /* Large padding at bottom to lift text while keeping gradient contact */
+    border-radius: 0;
+    color: white;
+    font-size: 2.2rem;
+    font-weight: 700;
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.9);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    
+}.video-overlay-title.is-animating { will-change: opacity, transform; }

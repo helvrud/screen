@@ -15,7 +15,7 @@
 
     <!-- Images and labels added directly to slide (no wrapper) -->
     {% for item in instance.items.all %}
-    {% thumbnail item.image 2000x2000 upscale as thumb %}
+    {% thumbnail item.image 1500x1000 crop upscale as thumb %}
     <img src="{% if thumb %}{{ thumb.url }}{% else %}{{ item.image.url }}{% endif %}" class="modern-photo"
         id="modern-photo-{{ instance.id }}-{{ forloop.index0 }}" alt="{{ item.subtitle }}"
         onerror="console.error('Modern Grid: Image failed to load', this.src)">
@@ -60,6 +60,7 @@
                 yPercent: -50,
                 width: '0vh',
                 height: '0vh',
+                aspectRatio: "3/2",
                 scale: 1
             });
             gsap.set(labels, { opacity: 0, visibility: 'hidden' });
@@ -78,8 +79,8 @@
                     .set([img, label], { visibility: 'visible' }, start)
                     .to(img, {
                         opacity: 1,
-                        width: "66vw", // 2/3 of screen width
-                        height: "66vh", // 2/3 of screen height
+                        width: "90vh",
+                        height: "60vh",
                         duration: 0.8,
                         ease: "back.out(1.2)"
                     }, start)

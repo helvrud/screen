@@ -265,6 +265,12 @@ class YouTubeEmbedPlugin(BaseSlidePlugin):
         verbose_name="YouTube Video ID",
         help_text="Enter the YouTube video ID (e.g., 'dQw4w9WgXcQ' from youtube.com/watch?v=dQw4w9WgXcQ)"
     )
+    subtitle = models.CharField(
+        max_length=500,
+        blank=True,
+        verbose_name="Overlay Subtitle",
+        help_text="Text to display as an overlay during video playback (optional)"
+    )
 
     def __str__(self):
         return f"Video: {self.video_title}"
