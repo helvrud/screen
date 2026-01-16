@@ -202,27 +202,21 @@
         }
         initPresentation();
 
-        // --- Mouse Idle Hider ---
+        // --- Mouse Idle Hider (Robust for TVs) ---
         let idleTimer;
 
         function showCursor() {
+            // Force cursor back on
+            document.documentElement.style.cursor = 'auto';
             document.body.style.cursor = 'auto';
             document.body.classList.remove('kiosk-mode');
 
-            // Also ensure arrows are visible if they rely on hover
             const arrows = document.querySelectorAll('.nav-arrow');
-            arrows.forEach(a => a.style.opacity = ''); // Reset to CSS default (or visible)
+            arrows.forEach(a => a.style.opacity = '');
 
-            // PAUSE PRESENTATION
-            if (window.activeTimeline) {
-                window.activeTimeline.pause();
-            }
-            // Pause YouTube if active
+            if (window.activeTimeline) window.activeTimeline.pause();
+
             if (window.player && typeof window.player.pauseVideo === 'function') {
-                // Check if current slide is video type to avoid pausing if it wasn't playing?
-                // Actually, safer to just try pausing if player exists.
-                // But wait, if we pause, we need to know if we should resume.
-                // For simplicity: yes, resume if it was playing. But simpler: just pause/play.
                 try {
                     const state = window.player.getPlayerState();
                     if (state === YT.PlayerState.PLAYING || state === YT.PlayerState.BUFFERING) {
@@ -233,21 +227,20 @@
             }
 
             clearTimeout(idleTimer);
-            idleTimer = setTimeout(hideCursor, 5000);
+            idleTimer = setTimeout(hideCursor, 3000); // Shorter 3s timeout for TV
         }
 
         function hideCursor() {
+            // Force cursor off everywhere
+            document.documentElement.style.cursor = 'none';
             document.body.style.cursor = 'none';
             document.body.classList.add('kiosk-mode');
 
-            // Optional: Hide arrows too for cleaner look
             const arrows = document.querySelectorAll('.nav-arrow');
             arrows.forEach(a => a.style.opacity = '0');
 
-            // RESUME PRESENTATION
-            if (window.activeTimeline) {
-                window.activeTimeline.play();
-            }
+            if (window.activeTimeline) window.activeTimeline.play();
+
             if (window.player && window.wasVideoPlaying && typeof window.player.playVideo === 'function') {
                 window.player.playVideo();
                 window.wasVideoPlaying = false;

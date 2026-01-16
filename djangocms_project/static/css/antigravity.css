@@ -20,8 +20,9 @@ html {
 }
 
 /* Kiosk Mode Support */
-body.kiosk-mode {
-    cursor: none;
+body.kiosk-mode,
+body.kiosk-mode * {
+    cursor: none !important;
 }
 
 #particles-js {
