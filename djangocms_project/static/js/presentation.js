@@ -1,6 +1,11 @@
 // presentation.js
 
 (function () {
+    // Performance optimization for TV/Kiosk browsers
+    if (typeof gsap !== 'undefined') {
+        gsap.config({ force3D: true });
+    }
+
     window.currentSlideIndex = 0;
     window.activeTimeline = null;
     window.lastReloadTime = Date.now();
