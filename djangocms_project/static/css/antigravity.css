@@ -251,7 +251,7 @@ body:hover .nav-arrow {
 
 /* Modern Gallery - True Masonry */
 .masonry-grid {
-    column-count: 15;
+    column-count: 12;
     column-gap: 20px;
     width: 95vw;
     /* Slightly wider for 7 cols */
