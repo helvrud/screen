@@ -550,7 +550,8 @@ body:hover .nav-arrow {
     overflow: hidden;
 }
 
-.research-image {
+.research-image,
+.research-video {
     width: 100%;
     height: 100%;
     object-fit: cover;

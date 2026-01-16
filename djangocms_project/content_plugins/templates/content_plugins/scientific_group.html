@@ -34,9 +34,15 @@
             {% for item in research_items %}
             <div class="research-card">
                 <div class="research-image-container">
-                    {% thumbnail item.image 900x600 crop upscale as thumb %}
-                    <img src="{% if thumb %}{{ thumb.url }}{% else %}{{ item.image.url }}{% endif %}"
+                    {% thumbnail item.image 900x600 crop upscale as th %}
+                    {% if item.video_file %}
+                    <video class="research-video" autoplay muted loop playsinline poster="{% if th %}{{ th.url }}{% else %}{{ item.image.url }}{% endif %}">
+                        <source src="{{ item.video_file.url }}" type="video/mp4">
+                    </video>
+                    {% else %}
+                    <img src="{% if th %}{{ th.url }}{% else %}{{ item.image.url }}{% endif %}"
                         alt="{{ item.title }}" class="research-image" onerror="this.style.display='none'">
+                    {% endif %}
                 </div>
                 <div class="research-info">
                     <h3 class="research-title">{{ item.title }}</h3>

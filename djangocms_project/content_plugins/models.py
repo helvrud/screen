@@ -6,6 +6,7 @@ Physics & Chemistry Department Website
 from django.db import models
 from cms.models import CMSPlugin
 from filer.fields.image import FilerImageField
+from filer.fields.file import FilerFileField
 from filer.fields.folder import FilerFolderField
 from djangocms_text_ckeditor.fields import HTMLField
 
@@ -395,7 +396,14 @@ class ResearchItem(models.Model):
     image = FilerImageField(
         on_delete=models.CASCADE,
         related_name="scientific_group_research_images",
-        verbose_name="Image"
+        verbose_name="Thumbnail Image"
+    )
+    video_file = FilerFileField(
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="scientific_group_research_videos",
+        verbose_name="Short Video (optional)"
     )
     description = models.TextField(verbose_name="Description", blank=True)
     order = models.PositiveIntegerField(default=0, verbose_name="Order")
