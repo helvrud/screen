@@ -81,6 +81,12 @@
         if (window.player && window.player.stopVideo) {
             window.player.stopVideo();
         }
+        const localPlayer = document.getElementById('local-video-player');
+        if (localPlayer) {
+            localPlayer.pause();
+            localPlayer.src = "";
+            localPlayer.load();
+        }
 
         // Reset all slides to hidden and remove animation flags
         slides.forEach(s => s.classList.remove('is-animating'));

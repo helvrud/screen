@@ -1,6 +1,7 @@
 {% load sekizai_tags %}
 <div class="slide slide-video cms-plugin-slide" data-slide-type="youtube_embed"
-    data-youtube-id="{{ instance.youtube_id }}" 
+    data-youtube-id="{{ instance.youtube_id|default:'' }}" 
+    data-video-file="{% if instance.video_file %}{{ instance.video_file.url }}{% endif %}"
     data-subtitle="{{ instance.subtitle }}"
     data-dept-title="{{ instance.department_title }}"
     data-dept-logo="{% if instance.department_logo %}{{ instance.department_logo.url }}{% endif %}"
@@ -15,14 +16,24 @@
     (function () {
         window.SlideHandlers.youtube_embed = function (element, completeCallback) {
             const videoId = element.dataset.youtubeId;
+            const videoFile = element.dataset.videoFile;
             const videoSubtitle = element.dataset.subtitle;
             const sharedContainer = document.getElementById('slide-video-shared');
             const overlayTitle = document.getElementById('video-dynamic-title');
+            const youtubePlayer = document.getElementById('player');
+            const localPlayer = document.getElementById('local-video-player');
 
             // Move focus to shared container
             gsap.set(sharedContainer, { visibility: "visible", opacity: 1, pointerEvents: "auto" });
             sharedContainer.classList.add('slide-video-active');
-            gsap.set('#player', { opacity: 0 });
+            
+            // Initial state: hide both players
+            if (youtubePlayer) youtubePlayer.style.display = 'none';
+            if (localPlayer) {
+                localPlayer.style.display = 'none';
+                localPlayer.pause();
+                localPlayer.onended = null;
+            }
 
             // Set and show overlay title ONLY if text exists
             if (overlayTitle) {
@@ -36,34 +47,61 @@
                 }
             }
 
-            // Helper to bridge the end of video to callback
-            window.currentVideoCompleteCallback = () => {
+            const cleanUpAndFinish = () => {
                 sharedContainer.classList.remove('slide-video-active');
                 if (overlayTitle) {
-                     gsap.to(overlayTitle, { opacity: 0, duration: 0.5 });
+                    gsap.to(overlayTitle, { opacity: 0, duration: 0.5 });
                 }
                 gsap.to(sharedContainer, {
                     opacity: 0, duration: 1, onComplete: () => {
                         gsap.set(sharedContainer, { visibility: 'hidden', pointerEvents: "none" });
+                        if (localPlayer) {
+                            localPlayer.pause();
+                            localPlayer.style.display = 'none';
+                        }
                         completeCallback();
                     }
                 });
             };
 
-            if (window.player && window.player.loadVideoById) {
-                window.player.loadVideoById({
-                    videoId: videoId,
-                    suggestedQuality: 'highres'
-                });
-                window.player.setPlaybackQuality('medium');
-                window.player.mute();
-                window.player.playVideo();
+            // CASE 1: Local Video File
+            if (videoFile) {
+                if (localPlayer) {
+                    localPlayer.style.display = 'block';
+                    localPlayer.src = videoFile;
+                    localPlayer.muted = true;
+                    localPlayer.onended = cleanUpAndFinish;
+                    localPlayer.play().catch(e => {
+                        console.error("Local video play failed:", e);
+                        setTimeout(cleanUpAndFinish, 2000);
+                    });
+                } else {
+                    setTimeout(cleanUpAndFinish, 2000);
+                }
+            } 
+            // CASE 2: YouTube Video
+            else if (videoId) {
+                if (youtubePlayer) youtubePlayer.style.display = 'block';
+                gsap.set('#player', { opacity: 0 });
+
+                window.currentVideoCompleteCallback = cleanUpAndFinish;
+
+                if (window.player && window.player.loadVideoById) {
+                    window.player.loadVideoById({
+                        videoId: videoId,
+                        suggestedQuality: 'highres'
+                    });
+                    window.player.mute();
+                    window.player.playVideo();
+                } else {
+                    console.error("YouTube Player not initialized");
+                    setTimeout(cleanUpAndFinish, 2000);
+                }
             } else {
-                console.error("YouTube Player not initialized");
-                setTimeout(completeCallback, 2000);
+                console.warn("No video source provided (YouTube ID or Local File)");
+                setTimeout(cleanUpAndFinish, 1000);
             }
 
-            // Return a dummy timeline effectively, as control is handed to YT events
             return gsap.timeline();
         };
     })();
