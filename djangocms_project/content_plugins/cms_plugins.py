@@ -154,7 +154,7 @@ class PeopleGridCMSPlugin(CMSPluginBase):
 @plugin_pool.register_plugin
 class YouTubeEmbedCMSPlugin(CMSPluginBase):
     model = YouTubeEmbedPlugin
-    name = _("YouTube Embed")
+    name = _("Video Slide")
     render_template = "content_plugins/youtube_embed.html"
     cache = True
     module = _("Presentation Plugins")
@@ -162,7 +162,6 @@ class YouTubeEmbedCMSPlugin(CMSPluginBase):
     def render(self, context, instance, placeholder):
         context = super().render(context, instance, placeholder)
         context['instance'] = instance
-        context['embed_url'] = instance.get_embed_url()
         return context
 
 @plugin_pool.register_plugin

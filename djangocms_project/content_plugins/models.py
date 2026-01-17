@@ -255,16 +255,27 @@ class PeopleGridImage(models.Model):
 
 class YouTubeEmbedPlugin(BaseSlidePlugin):
     """
-    Plugin 5: Responsive YouTube video embed
+    Plugin for Video slides: supports YouTube URLs or local video files.
     """
     video_title = models.CharField(
         max_length=200,
-        verbose_name="Video Title"
+        verbose_name="Internal Title",
+        help_text="Name of this slide in the CMS"
     )
     youtube_id = models.CharField(
         max_length=50,
+        blank=True,
+        null=True,
         verbose_name="YouTube Video ID",
-        help_text="Enter the YouTube video ID (e.g., 'dQw4w9WgXcQ' from youtube.com/watch?v=dQw4w9WgXcQ)"
+        help_text="Optional: Enter the YouTube video ID (e.g., 'dQw4w9WgXcQ')"
+    )
+    video_file = FilerFileField(
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="video_plugin_files",
+        verbose_name="Local Video File",
+        help_text="Optional: Upload an .mp4 file directly (H.264 recommended)"
     )
     subtitle = models.CharField(
         max_length=500,
@@ -276,13 +287,9 @@ class YouTubeEmbedPlugin(BaseSlidePlugin):
     def __str__(self):
         return f"Video: {self.video_title}"
 
-    def get_embed_url(self):
-        """Generate the embed URL from the video ID"""
-        return f"https://www.youtube.com/embed/{self.youtube_id}"
-
     class Meta:
-        verbose_name = "YouTube Embed"
-        verbose_name_plural = "YouTube Embeds"
+        verbose_name = "Video Slide"
+        verbose_name_plural = "Video Slides"
 
 class ModernSlidePlugin(BaseSlidePlugin):
     """
