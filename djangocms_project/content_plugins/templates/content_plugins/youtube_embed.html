@@ -70,6 +70,7 @@
                     localPlayer.style.display = 'block';
                     localPlayer.src = videoFile;
                     localPlayer.muted = true;
+                    localPlayer.volume = 0;
                     localPlayer.onended = cleanUpAndFinish;
                     localPlayer.play().catch(e => {
                         console.error("Local video play failed:", e);
@@ -91,7 +92,8 @@
                         videoId: videoId,
                         suggestedQuality: 'highres'
                     });
-                    window.player.mute();
+                    if (window.player.mute) window.player.mute();
+                    if (window.player.setVolume) window.player.setVolume(0);
                     window.player.playVideo();
                 } else {
                     console.error("YouTube Player not initialized");
