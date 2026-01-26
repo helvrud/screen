@@ -126,7 +126,7 @@ class PeopleGridCMSPlugin(CMSPluginBase):
     model = PeopleGridPlugin
     name = _("People Grid")
     render_template = "content_plugins/people_grid.html"
-    cache = True
+    cache = False  # Disabled during development
     module = _("Presentation Plugins")
     inlines = [PersonInline, PeopleGridImageInline]
 

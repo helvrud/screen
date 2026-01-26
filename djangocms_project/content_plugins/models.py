@@ -135,7 +135,9 @@ class GalleryImage(models.Model):
         related_name="images"
     )
     image = FilerImageField(
-        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
         related_name="gallery_images",
         verbose_name="Image"
     )
@@ -229,7 +231,9 @@ class PeopleGridImage(models.Model):
         related_name="extra_images"
     )
     image = FilerImageField(
-        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
         related_name="people_grid_extra_images",
         verbose_name="Image"
     )
@@ -319,7 +323,9 @@ class ModernSlideItem(models.Model):
         related_name="items"
     )
     image = FilerImageField(
-        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
         related_name="modern_slide_images",
         verbose_name="Image"
     )
@@ -375,7 +381,9 @@ class GroupMember(models.Model):
     )
     name = models.CharField(max_length=200, verbose_name="Name")
     photo = FilerImageField(
-        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
         related_name="scientific_group_member_photos",
         verbose_name="Photo"
     )
@@ -401,7 +409,9 @@ class ResearchItem(models.Model):
     )
     title = models.CharField(max_length=200, verbose_name="Research Title")
     image = FilerImageField(
-        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
         related_name="scientific_group_research_images",
         verbose_name="Thumbnail Image"
     )
@@ -471,7 +481,9 @@ class AwardItem(models.Model):
         related_name="awards"
     )
     image = FilerImageField(
-        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
         related_name="award_images",
         verbose_name="Award Image"
     )

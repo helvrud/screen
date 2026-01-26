@@ -12,12 +12,22 @@
 
     <div class="masonry-grid" id="masonry-grid-{{ instance.id }}">
         {% for item in images %}
-        <div class="masonry-item">
+        <div class="masonry-item masonry-slot" data-index="{{ forloop.counter0 }}">
             {% thumbnail item.image 800x0 upscale as thumb %}
-            <img src="{{ thumb.url }}" alt="{{ item.caption }}" class="gallery-photo" loading="lazy">
+            <img src="{{ thumb.url }}" alt="{{ item.caption }}" class="gallery-photo" loading="lazy" style="opacity: 0;">
             {% if item.caption %}
             <div class="gallery-caption">{{ item.caption }}</div>
             {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Flying Elements Container -->
+    <div class="flying-gallery-container">
+        {% for item in images %}
+        <div class="flying-gallery-item" data-slot-index="{{ forloop.counter0 }}">
+            {% thumbnail item.image 800x0 upscale as thumb %}
+            <img src="{{ thumb.url }}" alt="{{ item.caption }}" class="flying-gallery-photo">
         </div>
         {% endfor %}
     </div>
@@ -28,49 +38,88 @@
     (function () {
         window.SlideHandlers.gallery = function (element, completeCallback) {
             const timeline = gsap.timeline({ onComplete: completeCallback });
-            const slide = element;
 
-            // Shuffle Items in DOM (Client-side Randomization)
-            const grid = slide.querySelector('.masonry-grid');
-            if (grid) {
-                const items = Array.from(grid.querySelectorAll('.masonry-item'));
-                // Random sort
-                items.sort(() => Math.random() - 0.5);
-                // Re-append in new order
-                items.forEach(item => grid.appendChild(item));
+            // Start with black screen
+            gsap.set(element, { visibility: "visible", opacity: 1, scale: 1, backgroundColor: 'black' });
+
+            const flyingItems = element.querySelectorAll('.flying-gallery-item');
+            const slots = element.querySelectorAll('.masonry-slot');
+
+            if (flyingItems.length === 0) {
+                // Fallback
+                timeline.to(element, { opacity: 1, duration: 1 });
+                return timeline;
             }
 
-            gsap.set(slide, { visibility: "visible", opacity: 1 });
+            // Reset positions - start from center
+            flyingItems.forEach(item => {
+                const img = item.querySelector('.flying-gallery-photo');
 
-            // Stagger fade in items
-            const items = slide.querySelectorAll('.masonry-item');
-            
-            // Optimization for TV: remove high-res requirements
-            items.forEach(item => item.classList.add('is-animating'));
+                if (img) gsap.set(img, {
+                    opacity: 0,
+                    visibility: 'visible',
+                    scale: 0,
+                    position: 'fixed',
+                    top: '50%',
+                    left: '50%',
+                    width: '60vh',
+                    height: 'auto',
+                    transformOrigin: 'center center',
+                    zIndex: 100
+                });
+            });
 
-            // Ensure they are visible to start (in case of CSS opacity issues) but 0 opacity for fade
-            gsap.set(items, { opacity: 0, y: 50, visibility: 'visible' });
+            // Create array of indices and shuffle it
+            const indices = Array.from({ length: flyingItems.length }, (_, i) => i);
+            indices.sort(() => Math.random() - 0.5);
 
-            if (items.length > 0) {
-                // Use .to() which is sometimes more reliable than fromTo if state is already set
-                timeline.to(items,
-                    { opacity: 1, y: 0, duration: 0.8, stagger: 0.1, ease: "power2.out" }
-                );
-            }
+            let currentTime = 0;
 
-            // Hold then fade out
-            timeline
-                .to({}, { duration: 5 })
-                .to(items, { 
-                    opacity: 0, 
-                    y: -20, 
-                    duration: 0.5, 
-                    stagger: 0.05,
-                    onComplete: () => {
-                        items.forEach(item => item.classList.remove('is-animating'));
-                    }
-                }) // Nice exit
-                .to(slide, { opacity: 0, duration: 1 });
+            indices.forEach((i) => {
+                const item = flyingItems[i];
+                const slot = slots[i];
+                if (!slot) return;
+
+                const slotImg = slot.querySelector('.gallery-photo');
+                if (!slotImg) return;
+
+                const rect = slotImg.getBoundingClientRect();
+                const img = item.querySelector('.flying-gallery-photo');
+
+                if (img) {
+                    // Show image - blow up from center
+                    timeline
+                        .set(img, { visibility: 'visible' }, currentTime)
+                        .to(img, {
+                            opacity: 1,
+                            scale: 1,
+                            duration: 0.5,
+                            ease: "power2.out"
+                        }, currentTime);
+
+                    currentTime += 0.5;
+
+                    // Move to grid position
+                    timeline.to(img, {
+                        top: rect.top + (rect.height / 2),
+                        left: rect.left + (rect.width / 2),
+                        width: rect.width,
+                        height: rect.height,
+                        duration: 0.6,
+                        ease: "power2.inOut",
+                        onComplete: () => {
+                            // Show the actual masonry image
+                            gsap.set(slotImg, { opacity: 1 });
+                            // Hide the flying image
+                            gsap.set(img, { opacity: 0 });
+                        }
+                    }, currentTime);
+
+                    currentTime += 0.6;
+                }
+            });
+
+            timeline.to({}, { duration: 3 }).to(element, { opacity: 0, duration: 1 });
 
             return timeline;
         };

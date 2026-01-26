@@ -1,40 +1,40 @@
 {% load thumbnail static sekizai_tags %}
 
-<div class="slide slide-people cms-plugin-slide" data-slide-type="people_grid"
-    data-dept-title="{{ instance.department_title }}"
-    data-dept-logo="{% if instance.department_logo %}{{ instance.department_logo.url }}{% endif %}"
-    data-dept-url="{{ instance.department_website }}">
+<div class="slide slide-people cms-plugin-slide"
+     data-slide-type="people_grid"
+     data-dept-title="{{ instance.department_title }}"
+     data-dept-logo="{% if instance.department_logo %}
+                         {{ instance.department_logo.url }}
+                     {% endif %}"
+     data-dept-url="{{ instance.department_website }}">
     <div class="slide-content">
         <h1 class="title-large">{{ instance.title }}</h1>
-
         <div class="people-grid" id="grid-container-{{ instance.id }}">
-            {% for item in grid_items %}
-            <div class="slot" id="slot-{{ forloop.counter0 }}"></div>
-            {% endfor %}
+            {% for item in grid_items %}<div class="slot" id="slot-{{ forloop.counter0 }}"></div>{% endfor %}
         </div>
-
         <!-- Flying Elements (Direct children of slide-content, matching static DOM structure) -->
         <div class="flying-elements-container">
             {% for item in grid_items %}
-            <div class="flying-item" data-slot-index="{{ forloop.counter0 }}">
-                {% if item.type == 'person' %}
-                {% if item.photo %}
-                <img src="{{ item.photo.url }}" alt="{{ item.name }}" class="person-photo">
-                {% endif %}
-                <div class="person-label">
-                    <h3>{{ item.name }}</h3>
-                    <p class="subtitle">{{ item.job_title }}</p>
+                <div class="flying-item" data-slot-index="{{ forloop.counter0 }}">
+                    {% if item.type == 'person' %}
+                        {% if item.photo %}<img src="{{ item.photo.url }}" alt="{{ item.name }}" class="person-photo">{% endif %}
+                        <div class="person-label">
+                            <h3>{{ item.name }}</h3>
+                            <p class="subtitle">{{ item.job_title }}</p>
+                        </div>
+                    {% else %}
+                        <img src="{{ item.image.url }}"
+                             alt="{{ item.caption }}"
+                             class="person-photo"
+                             style="border-radius: 4px;
+                                    border: 1px solid rgba(255,255,255,0.2)">
+                        {% if item.caption %}
+                            <div class="person-label">
+                                <h3>{{ item.caption }}</h3>
+                            </div>
+                        {% endif %}
+                    {% endif %}
                 </div>
-                {% else %}
-                <img src="{{ item.image.url }}" alt="{{ item.caption }}" class="person-photo"
-                    style="border-radius: 4px; border: 1px solid rgba(255,255,255,0.2);">
-                {% if item.caption %}
-                <div class="person-label">
-                    <h3>{{ item.caption }}</h3>
-                </div>
-                {% endif %}
-                {% endif %}
-            </div>
             {% endfor %}
         </div>
         {% addtoblock "js" %}
@@ -56,48 +56,102 @@
                         return timeline;
                     }
 
-                    // Reset positions
+                    // Reset positions - start from nothing at center
                     items.forEach(item => {
                         const img = item.querySelector('.person-photo');
                         const label = item.querySelector('.person-label');
 
-                        // Ensure visibility: visible but opacity: 0 to start
-                        if (img) gsap.set(img, { opacity: 0, visibility: 'visible', top: '50%', left: '50%', width: '0vh', height: '0vh' });
-                        if (label) gsap.set(label, { opacity: 0, visibility: 'visible' });
+                        // Start at center, scaled to 0 (invisible point)
+                        if (img) gsap.set(img, {
+                            opacity: 0,
+                            visibility: 'visible',
+                            scale: 0,
+                            rotation: 0,
+                            top: '50%',
+                            left: '50%',
+                            width: '60vh',
+                            height: '60vh',
+                            transformOrigin: 'center center'
+                        });
+                        if (label) gsap.set(label, {
+                            opacity: 0,
+                            visibility: 'visible',
+                            scale: 0,
+                            transformOrigin: 'center center'
+                        });
                     });
+
+                    // SIMPLIFIED: Very obvious acceleration
+                    let cumulativeTime = 0;
+                    const totalItems = items.length;
 
                     items.forEach((item, i) => {
                         const slot = slots[i];
                         if (!slot) return;
 
                         const rect = slot.getBoundingClientRect();
-                        const start = i * 2.4;
                         const img = item.querySelector('.person-photo');
                         const label = item.querySelector('.person-label');
 
+                        // Simple linear acceleration from slow to very fast
+                        const progress = i / Math.max(1, totalItems - 1); // 0 to 1
+
+                        // Delay decreases from 0.3s to 0.02s
+                        const itemDelay = 0.3 - (progress * 0.28);
+
+                        // Fixed short durations so we can see the delay change
+                        const blowUpDuration = 0.3;
+                        const flyDuration = 0.3;
+                        const labelDelay = 0.1;
+
+                        // Debug first few items
+                        if (i < 5 || i > totalItems - 5) {
+                            console.log(`Item ${i}: delay=${itemDelay.toFixed(3)}s, startTime=${cumulativeTime.toFixed(2)}s`);
+                        }
+
                         if (img) {
+                            // Blow up from nothing with elastic bounce + rotation
                             timeline
-                                .set(img, { visibility: 'visible' }, start)
-                                .to(img, { opacity: 1, width: "60vh", height: "60vh", duration: 0.7, ease: "back.out(1.2)" }, start);
+                                .set(img, { visibility: 'visible' }, cumulativeTime)
+                                .to(img, {
+                                    opacity: 1,
+                                    scale: 1,
+                                    rotation: 360,
+                                    duration: blowUpDuration,
+                                    ease: "elastic.out(1, 0.6)"
+                                }, cumulativeTime);
                         }
 
                         if (label) {
+                            // Label appears with a bounce
                             timeline
-                                .set(label, { visibility: 'visible' }, start) // Ensure visible before fade
-                                .to(label, { opacity: 1, duration: 0.5 }, start + 0.2)
-                                .to(label, { opacity: 0, duration: 0.3 }, start + 1.8);
+                                .set(label, { visibility: 'visible' }, cumulativeTime + labelDelay)
+                                .to(label, {
+                                    opacity: 1,
+                                    scale: 1,
+                                    duration: 0.3,
+                                    ease: "back.out(2)"
+                                }, cumulativeTime + labelDelay)
+                                .to(label, { opacity: 0, duration: 0.2 }, cumulativeTime + blowUpDuration + 0.6);
                         }
 
                         if (img) {
+                            // Move to grid position, shrink and reset rotation
                             timeline.to(img, {
                                 top: rect.top + (rect.height / 2),
                                 left: rect.left + (rect.width / 2),
+                                marginTop: -(rect.height / 2),
+                                marginLeft: -(rect.width / 2),
                                 width: rect.width,
                                 height: rect.height,
-                                duration: 1.2,
-                                ease: "power3.inOut"
-                            }, start + 1.8);
+                                rotation: 0,
+                                duration: flyDuration,
+                                ease: "power2.inOut"
+                            }, cumulativeTime + blowUpDuration + 0.8);
                         }
+
+                        // Update cumulative time for next item - just use the delay!
+                        cumulativeTime += itemDelay;
                     });
 
                     timeline.to({}, { duration: 4 }).to(element, { opacity: 0, scale: 0.2, duration: 1 });
@@ -106,6 +160,6 @@
                 };
             })();
         </script>
-        {% endaddtoblock %}
-    </div>
+    {% endaddtoblock %}
+</div>
 </div>
